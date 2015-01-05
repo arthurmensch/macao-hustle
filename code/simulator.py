@@ -193,7 +193,7 @@ def play_duplex_simple():
 
 
 
-def estimate_r():
+def estimate_r_simple():
 	k = np.int(np.ceil(math.e * np.log(T)/2))
 	C = np.int(np.ceil(2*np.log(T)/N))
 	j = 0
@@ -205,8 +205,9 @@ def estimate_r():
 		I = np.random.randint(0,N)
 		regret += l[I]-l
 		max_regret.append(np.max(regret))
-		O = observed(I)
+		O, O_index = observed(I)
 		c += np.sum(O) - 1
+		
 	if c/(C*(N-1)) <= 3 /(2*N):
 		return 0,C,np.array(max_regret)
 	else:
@@ -215,7 +216,7 @@ def estimate_r():
 			I= np.random.randint(0,N)
 			regret += l[I]-l
 			max_regret.append(np.max(regret))
-			O = observed(I)
+			O, O_index = observed(I)
 			M = np.zeros(k)
 			for i in range(0,N):
 				M[j] = M[j] + (i != I)
@@ -223,6 +224,84 @@ def estimate_r():
 				if j == k:
 					return 1/(np.max(M)+1),t+1,np.array(max_regret)
 		return 0,T,np.array(max_regret)
+
+def estimate_r():
+        k = np.int(np.ceil(math.e * np.log(T)/2))
+        C = np.int(np.ceil(2*np.log(T)/N))
+        B1= np.int(np.ceil(2*np.log(T)/N1))
+        B2= np.int(np.ceil(2*np.log(T)/N2))
+        j = 0
+        c = 0
+        regret = 0
+        max_regret = []
+	#first estimate r11 an r12
+        for t in range(0,max(C1,C2)):
+                l = loss()
+                I = np.random.randint(0,N1)
+                regret += l[I]-l
+                max_regret.append(np.max(regret))
+                O, O_index = observed(I)
+                c1 += np.sum(O[C1]) - 1
+                c12 +=np.sum(0[C2])
+
+        #first extimate r22
+        for t in range(max(C1,C2),C2+max(C1,C2)):
+                l = loss()
+                I = np.random.randint(0,N1)
+                regret += l[I]-l
+                max_regret.append(np.max(regret))
+                O, O_index = observed(I)
+                c2 += np.sum(O[C2]) - 1
+
+        if c2/(B2*(N2-1)) <= 3 /(2*N2) and c1/(B1*(N1-1)) <= 3 /(2*N1) and c12/(B2*(N2)) <= 3 /(2*N2) :
+                return 0,C1+C2,np.array(max_regret)
+
+        else:
+                r11=0
+                r22=0
+                r12=0
+                hasr12=False
+                hasr11=False
+                #boucle pour r11 et r12
+                for t in range(max(C1,C2)+C2,T):
+                        l = loss()
+                        I= np.random.randint(0,N1)
+                        regret += l[I]-l
+                        max_regret.append(np.max(regret))
+                        O, O_index = observed(I)
+                        M = np.zeros(k)
+                        if not hasr11:
+                                for i in range(0,N1):
+                                        M[j] = M[j] + (i != I)
+                                        j = j + O[i] * (i != I)
+                                        if j == k:
+                                                r11=max(1/(np.max(M)+1),r11)
+                                                hasr11=True
+                        if not hasr12:
+                                for i in range(N1,N):
+                                        M[j] = M[j] + (i != I)
+                                        j = j + O[i] * (i != I)
+                                        if j == k:
+                                                r12=max(1/(np.max(M)+1),r12)
+                                                hasr12=True
+                        if hasr11 and hasr12:
+                                break
+                        
+                #boucle pour r22
+                for s in range(t,T):
+                        l = loss()
+                        I= np.random.randint(N1,N1+N2)
+                        regret += l[I]-l
+                        max_regret.append(np.max(regret))
+                        O, O_index = observed(I)
+                        M = np.zeros(k)
+                        for i in range(N1,N1+N2):
+                                M[j] = M[j] + (i != I)
+                                j = j + O[i] * (i != I)
+                                if j == k:
+                                        r22=max(1/(np.max(M)+1),r22)
+                                        break;
+                return r11,r12,r22,s,np.array(max_regret)
 
 if __name__ == '__main__':
 	max_regret_r = play_duplex()
