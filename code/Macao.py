@@ -5,9 +5,9 @@ import matplotlib.pyplot as plt
 
 class Graph:
 	def __init__(self, cluster_size, r_mat):
-		self.cluster_size = self.cluster_size
+		self.cluster_size = cluster_size
 		self.num_cluster = np.size(self.cluster_size)
-		self.cluster_bounds = np.zeros(self.num_cluster+1)
+		self.cluster_bounds = np.zeros(self.num_cluster+1,dtype=int)
 		self.cluster_bounds[1:self.num_cluster+1] = np.cumsum(cluster_size)
 		self.N = self.cluster_bounds[self.num_cluster]
 		self.nodes = np.arange(self.N)
@@ -29,11 +29,13 @@ class Graph:
 
 class Adversary:
 	def __init__(self, N):
-		self.N = self.N
+		self.N = N
 
 	@property
 	def loss(self):
-		return np.random.uniform(0,1,size=[self.N])
+		N1 = int(self.N / 2)
+		N2 = self.N - N1
+		return np.hstack((np.random.uniform(5,5,size=[N1]),np.random.uniform(1,1,size=[N2])))
 
 class Player:
 	def __init__(self, T, N):
@@ -59,6 +61,7 @@ class Game:
 		self.graph = graph
 		self.adversary = adversary
 		self.T = T
+		self.players = players
 
 	def round(self):
 		observe = self.graph.observe
@@ -76,8 +79,8 @@ class Game:
 		plt.show()
 
 class DuplexpPlayer(Player):
-	def __init__(self,T,graph):
-		super(T)
+	def __init__(self,T,N,graph):
+		Player.__init__(self,T,N)
 		self.graph = graph
 		Toff = self.T + 2
 		self.Lhat = np.zeros([Toff,self.N])
@@ -85,7 +88,7 @@ class DuplexpPlayer(Player):
 		self.p = np.zeros([Toff,self.N])
 		self.O = np.zeros([Toff,self.N])
 		self.estimate_phase = False
-		self.last_t = np.zeros([2,np.graph.num_cluster])
+		self.last_t = np.zeros([2,self.graph.num_cluster])
 
 	def choose_arm(self,observe,loss):
 		if self.estimate_phase:
@@ -97,23 +100,26 @@ class DuplexpPlayer(Player):
 			t = self.t
 			e = t % 2
 			eta = np.sqrt(np.log(self.N)/(self.N*self.N)
-						  + np.sum(np.multiply(self.p[e:t:2],self.DLhat[e:t:2],self.DLhat[e:t:2])))
-			w = 1/self.N * np.exp(-eta*self.Lhat[t-2,:])
-			I = np.random.choice(self.N,p=self.p[t,:])
-			self.O[t,:] = observe(self.I[t])
-			c = self.graph.find_cluster(self.I[t])
+						  + np.sum(np.multiply(np.multiply(self.p[e:t:2],self.DLhat[e:t:2]),self.DLhat[e:t:2])))
+			w = -eta*self.Lhat[t-2,:]
+			w = w - np.max(w)
+			w = np.exp(w)
+			self.p[t,:] = w/np.sum(w)
+			I = np.random.choice(int(self.N),p=self.p[t,:])
+			self.O[t,:] = observe(I)
+			c = self.graph.find_cluster(I)
 			M = np.zeros(self.graph.num_cluster)
 			for k in range(0,self.graph.num_cluster):
 				Oc = self.O[self.last_t[e,c],self.graph.C[k]]
 				if k == c:
-					Oc = np.delete(Oc,self.I[self.last_t[e][c]])
+					Oc = np.delete(Oc,self.I[self.last_t[e,c]]-self.graph.cluster_bounds[c])
 				min_i = np.nonzero(Oc)[0]
 				M[k] = min_i[0] if np.size(min_i) > 0 else self.graph.cluster_size(k)-1
 			for i in range(0,self.N):
 				c= self.graph.find_cluster(i)
 				K[i] = np.random.geometric(self.p[t,i])
 				G[i] = min(M[c],K[i])
-			lhat = np.multiply(loss,self.O[t,:],G)
+			lhat = np.multiply(np.multiply(loss,self.O[t,:]),G)
 			self.DLhat[t,:] = lhat
 			self.Lhat[t,:] = self.Lhat[t-2,:]+self.DLhat[t,:]
 			return I
@@ -122,4 +128,10 @@ class DuplexpPlayer(Player):
 def test():
 	graph = Graph([500,500],np.array([[0.1,0.05],[0.05,0.2]]))
 	adversary = Adversary(graph.N)
-	players = [DuplexpPlayer(1000,)]
+	players = [DuplexpPlayer(300,graph.N,graph),Player(300,graph.N)]
+	game = Game(graph,adversary,300,players)
+	game.run()
+	game.display()
+
+if __name__ == '__main__':
+	test()
