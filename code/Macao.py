@@ -182,6 +182,7 @@ class DuplexpPlayerErdos(Player):
 
 	def choose_arm(self,observe,loss):
 		if self.estimate_phase:
+                        r=estimate_phase(self)
 			return super('choose_arm')
 			#TODO perform estimation
 		else:
@@ -211,6 +212,74 @@ class DuplexpPlayerErdos(Player):
 			self.DLhat[t,:] = lhat
 			self.Lhat[t,:] = self.Lhat[t-2,:]+self.DLhat[t,:]
 			return I
+
+	def estimate_phase(self):
+		k = np.int(np.ceil(math.e * np.log(self.T)/2))
+		C=np.zeros(self.graph.num_cluster+1)
+		for i in range(0,self.graph.num_cluster):
+			C[i]= np.int(np.ceil(2*np.log(self.T)/self.graph.cluster_size[i]))
+		j = 0
+		s=0
+		c = np.zeros(2*self.graph.num_cluster-1)
+		isNul=np.zeros(2*self.graph.num_cluster-1)
+		r=np.zeros(2*self.graph.num_cluster-1)
+		regret = 0
+		max_regret = []
+		for i in range(0,self.graph.num_cluster):
+			for t in range(s,min(max(s+C[i],s+C[i+1],T))):
+				l = loss()
+				I = np.random.randint(self.graph.cluster_bounds[i],self.graph.cluster_bounds[i+1])
+				regret += l[I]-l
+				max_regret.append(np.max(regret))
+				O, O_index = observed(I)
+				if (t-s)<C[i] :
+					c[i] += np.sum(O[self.graph.cluster_bounds[i]:self.graph.cluster_bounds[i+1]]) - 1
+				if i<self.graph.num_cluster-1 and (t-s)<C[i+1]:
+					c[self.graph.num_cluster+i] +=np.sum(0[self.graph.cluster_bounds[i+1]:self.graph.cluster_bounds[i+2]])
+			s=t
+			if c[i]/(C[i]*(self.graph.cluster_size[i]-1))<=3/2*self.graph.cluster_size[i]:
+				isNul[i]=1;
+			if i<self.graph.num_cluster-1 and c[self.graph.num_cluster+i]/(C[i+1]*self.graph.cluster_size[i+1])<=3/(2*self.graph.cluster_size[i+1]):
+				isNull[self.graph.num_cluster+i]=1;
+			
+
+		for i in range(0,2*self.graph.num_cluster-1):
+			if isNull[i]==0:
+				break
+		if i==2*self.graph.num_cluster-2:
+			self.t=s
+			return r
+		else:
+			for i in range(0,self.graph.num_cluster):
+				for t in range(s,T):
+					l = loss()
+					I= np.random.randint(self.graph.cluster_bounds[i],self.graph.cluster_bounds[i+1])
+					regret += l[I]-l
+					max_regret.append(np.max(regret))
+					O, O_index = observed(I)
+					M1 = np.zeros(k)
+					M2 = np.zeros(k)
+					if r[i]==0:
+						for i in range(self.graph.cluster_bounds[i],self.graph.cluster_bounds[i+1]):
+							M1[j1] = M1[j1] + (i != I)
+							j1 = j1 + O[i] * (i != I)
+							if j1 == k:
+								r[i]=1/(np.max(M1)+1)
+
+					if i<self.graph.num_cluster-1:
+						if r[self.graph.num_cluster+i]==0:
+							for i in range(self.graph.cluster_bounds[i+1],self.graph.cluster_bounds[i+2]):
+								M2[j2] = M2[j2] + (i != I)
+								j2 = j2 + O[i] * (i != I)
+								if j2 == k:
+									r[self.graph.num_cluster+i]=1/(np.max(M2)+1)
+
+				if r[i]>0 and( i==self.graph.num_cluster-1 or r[self.graph.num_cluster+i]>0 ) :
+					s=t
+					break
+			self.t=t
+			self.regret=np.array(max_regret)
+			return r
 
 	def __str__(self):
 		return 'Duplexp Erdös'
