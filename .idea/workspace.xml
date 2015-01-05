@@ -32,7 +32,7 @@
           <file leaf-file-name="simulator.py" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/code/simulator.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="4740">
+                <state vertical-scroll-proportion="0.0" vertical-offset="270" max-vertical-offset="4740">
                   <caret line="18" column="73" selection-start-line="18" selection-start-column="73" selection-end-line="18" selection-end-column="92" />
                   <folding>
                     <element signature="e#23#41#0" expanded="true" />
@@ -44,8 +44,8 @@
           <file leaf-file-name="Macao.py" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/code/Macao.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="0.3327032" vertical-offset="1534" max-vertical-offset="2145">
-                  <caret line="114" column="90" selection-start-line="114" selection-start-column="90" selection-end-line="114" selection-end-column="90" />
+                <state vertical-scroll-proportion="0.54545456" vertical-offset="666" max-vertical-offset="3030">
+                  <caret line="66" column="0" selection-start-line="66" selection-start-column="0" selection-end-line="66" selection-end-column="0" />
                   <folding>
                     <element signature="e#23#41#0" expanded="true" />
                   </folding>
@@ -56,8 +56,8 @@
           <file leaf-file-name="function_base.py" pinned="false" current-in-tab="false">
             <entry file="file:///usr/lib/python3/dist-packages/numpy/lib/function_base.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="0.0" vertical-offset="49204" max-vertical-offset="53415">
-                  <caret line="3292" column="0" selection-start-line="3292" selection-start-column="0" selection-end-line="3292" selection-end-column="0" />
+                <state vertical-scroll-proportion="0.0" vertical-offset="49129" max-vertical-offset="53415">
+                  <caret line="3287" column="0" selection-start-line="3287" selection-start-column="0" selection-end-line="3287" selection-end-column="0" />
                   <folding />
                 </state>
               </provider>
@@ -70,8 +70,8 @@
           <file leaf-file-name="Macao.py" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/code/Macao.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="0.78488374" vertical-offset="1155" max-vertical-offset="2145">
-                  <caret line="104" column="4" selection-start-line="104" selection-start-column="4" selection-end-line="104" selection-end-column="4" />
+                <state vertical-scroll-proportion="0.697074" vertical-offset="1230" max-vertical-offset="3030">
+                  <caret line="109" column="4" selection-start-line="109" selection-start-column="4" selection-end-line="109" selection-end-column="4" />
                   <folding>
                     <element signature="e#23#41#0" expanded="true" />
                   </folding>
@@ -122,7 +122,6 @@
       <sortByType />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -157,6 +156,7 @@
           </PATH>
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -373,23 +373,23 @@
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32938644" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32938644" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.39935413" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32938644" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.12229837" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.39935413" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32938644" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32938644" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32938644" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.39935413" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32938644" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
     </layout>
   </component>
@@ -416,34 +416,43 @@
       <breakpoints-dialog>
         <breakpoints-dialog />
       </breakpoints-dialog>
-      <option name="time" value="34" />
+      <option name="time" value="45" />
     </breakpoint-manager>
     <watches-manager>
       <configuration name="PythonConfigurationType">
-        <watch expression="w" language="Python" />
         <watch expression="lhat" language="Python" />
-        <watch expression="loss" language="Python" />
-        <watch expression="self.O[t,:]" language="Python" />
-        <watch expression="I" language="Python" />
-        <watch expression="self.O[t,:]" language="Python" />
-        <watch expression="Oc = self.O[self.last_t[e,c],self.graph.C[k]]" language="Python" />
-        <watch expression="self.O" language="Python" />
-        <watch expression="Oc = self.O[self.last_t[e,c],:]" language="Python" />
-        <watch expression="self.last_t[e,c)]" language="Python" />
-        <watch expression="self.last_t[e,c]" language="Python" />
-        <watch expression="self.O[0,:]" language="Python" />
-        <watch expression="Oc = self.O[0,self.graph.C[k]]" language="Python" />
-        <watch expression="self.graph.C[k]" language="Python" />
-        <watch expression="Oc = self.O[:,self.graph.C[k]]" language="Python" />
-        <watch expression="Oc = self.O[self.graph.C[k]]" language="Python" />
-        <watch expression="self.O[:,self.graph.C[k]]" language="Python" />
-        <watch expression="self.O[self.last_t[e,c],self.graph.C[k]]" language="Python" />
-        <watch expression="self.I[self.last_t[e,c]]" language="Python" />
-        <watch expression="self.I[self.last_t[e,c]]-self.graph.cluster_bounds[c]" language="Python" />
       </configuration>
     </watches-manager>
   </component>
   <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/code/simulator.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="270" max-vertical-offset="4740">
+          <caret line="18" column="73" selection-start-line="18" selection-start-column="73" selection-end-line="18" selection-end-column="92" />
+          <folding>
+            <element signature="e#23#41#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///usr/lib/python3/dist-packages/numpy/lib/function_base.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="49204" max-vertical-offset="53415">
+          <caret line="3292" column="0" selection-start-line="3292" selection-start-column="0" selection-end-line="3292" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/code/Macao.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="2145">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="e#23#41#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/code/simulator.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="3525">
@@ -507,16 +516,16 @@
     </entry>
     <entry file="file:///usr/lib/python3/dist-packages/numpy/lib/function_base.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="49204" max-vertical-offset="53415">
-          <caret line="3292" column="0" selection-start-line="3292" selection-start-column="0" selection-end-line="3292" selection-end-column="0" />
+        <state vertical-scroll-proportion="0.0" vertical-offset="49129" max-vertical-offset="53415">
+          <caret line="3287" column="0" selection-start-line="3287" selection-start-column="0" selection-end-line="3287" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/code/Macao.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.3327032" vertical-offset="1534" max-vertical-offset="2145">
-          <caret line="114" column="90" selection-start-line="114" selection-start-column="90" selection-end-line="114" selection-end-column="90" />
+        <state vertical-scroll-proportion="0.54545456" vertical-offset="666" max-vertical-offset="3030">
+          <caret line="66" column="0" selection-start-line="66" selection-start-column="0" selection-end-line="66" selection-end-column="0" />
           <folding>
             <element signature="e#23#41#0" expanded="true" />
           </folding>
