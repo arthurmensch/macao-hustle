@@ -1,7 +1,22 @@
 __author__ = 'arthur'
 
 import numpy as np
+
+import matplotlib as mpl
+
+mpl.use("pgf")
+pgf_with_pdflatex = {
+	"pgf.texsystem": "pdflatex",
+	"pgf.preamble": [
+		 r"\usepackage[utf8x]{inputenc}",
+		 r"\usepackage[T1]{fontenc}",
+		 r"\usepackage{amsmath}"
+		 ]
+}
+mpl.rcParams.update(pgf_with_pdflatex)
+
 import matplotlib.pyplot as plt
+
 
 class Graph:
 	def __init__(self, cluster_size, r_mat):
@@ -28,21 +43,59 @@ class Graph:
 		return obs
 
 class Adversary:
-	def __init__(self, T, N):
-		self.N = N
-		self.T = T
+	def __init__(self, game):
+		self.game = game
+		self.N = game.N
+		self.T = game.T
 		N1 = int(self.N / 2)
 		N2 = self.N - N1
-		self.loss = np.hstack((np.random.uniform(5,10,size=[T,N1]),np.random.uniform(0,1,size=[T,N1])))
+		self.loss = np.hstack((np.random.uniform(5,10,size=[self.T,N1]),np.random.uniform(0,1,size=[self.T,N1])))
+
+class Game:
+	def __init__(self, graph, T, players_type,number):
+		self.graph = graph
+		self.N = self.graph.N
+		self.T = T
+		self.number = number
+		self.players_type = players_type
+		self.num_players = len(self.players_type)
+		self.max_regret = np.zeros([self.T,self.num_players])
+
+
+	def init(self):
+		self.adversary = Adversary(self)
+		self.players =  [self.players_type[i](self) for i in range(0,self.num_players)]
+
+	def round(self):
+		observe = self.graph.observe
+		loss = self.adversary.loss
+		for player in self.players:
+			player.play(observe,loss)
+
+	def run(self):
+		for i in range(0,self.number):
+			self.init()
+			for i in range(0,self.T):
+				self.round()
+			for j in range(0,self.num_players):
+				self.max_regret[:,j] += self.players[j].max_regret
+		self.max_regret /= self.number
+
+	def display(self):
+		for i in range(0,self.num_players):
+			plt.plot(np.arange(self.T),self.max_regret[:,i],label = self.players_type[i].playerName())
+		plt.legend(loc=2)
+		plt.savefig('regret.pdf')
+
 
 class Player:
-	def __init__(self, T, N):
+	def __init__(self, game):
 		self.regret = 0
-		self.T = T
-		self.N = N
+		self.T = game.T
+		self.N = game.N
 		self.t = 0
-		self.I = np.zeros(T)
-		self.max_regret = np.zeros(T)
+		self.I = np.zeros(self.T)
+		self.max_regret = np.zeros(self.T)
 
 	def play(self,observe,loss):
 		I = self.choose_arm(observe,loss)
@@ -55,38 +108,15 @@ class Player:
 		return np.random.randint(0,self.N)
 
 	def __str__(self):
-		return 'Naive'
+		return 'Naive Player'
 
-class Game:
-	def __init__(self, graph, adversary, T, players,number):
-		self.graph = graph
-		self.adversary = adversary
-		self.T = T
-		self.players = players
-		self.number = number
-
-	def round(self):
-		observe = self.graph.observe
-		loss = self.adversary.loss
-		for player in self.players:
-			player.play(observe,loss)
-
-	def run(self):
-		for i in range(0,self.T):
-			self.round()
-
-	def display(self):
-		i = 1
-		for player in self.players:
-			plt.plot(np.arange(self.T),player.max_regret,label = str(player))
-			i += 1
-		plt.legend()
-		plt.show()
+	def playerName():
+		return 'Naive Player'
 
 class DuplexpPlayer(Player):
-	def __init__(self,T,N,graph):
-		Player.__init__(self,T,N)
-		self.graph = graph
+	def __init__(self,game):
+		Player.__init__(self,game)
+		self.graph = game.graph
 		Toff = self.T + 2
 		self.Lhat = np.zeros([Toff,self.N])
 		self.DLhat = np.zeros([Toff,self.N])
@@ -135,9 +165,12 @@ class DuplexpPlayer(Player):
 	def __str__(self):
 		return 'Duplexp'
 
+	def playerName():
+		return 'Duplexp SBM'
+
 class DuplexpPlayerErdos(Player):
-	def __init__(self,T,N):
-		Player.__init__(self,T,N)
+	def __init__(self,game):
+		Player.__init__(self,game)
 		Toff = self.T + 2
 		self.Lhat = np.zeros([Toff,self.N])
 		self.DLhat = np.zeros([Toff,self.N])
@@ -180,15 +213,18 @@ class DuplexpPlayerErdos(Player):
 			return I
 
 	def __str__(self):
-		return 'Duplexp Erdos'
+		return 'Duplexp Erdös'
+
+	def playerName():
+		return 'Duplexp Erdös'
 
 def test():
-	T = 1000
-	#graph = Graph([200,200,200],np.array([[0.1,0.05,0],[0.05,0.2,0],[0,0,0.5]]))
-	graph = Graph([600],np.array([[0.2]]))
-	adversary = Adversary(T,graph.N)
-	players = [DuplexpPlayer(T,graph.N,graph),DuplexpPlayerErdos(T,graph.N),Player(T,graph.N)]
-	game = Game(graph,adversary,T,players,1)
+	T = 10
+	num = 50
+	graph = Graph([200,200,200],np.array([[0.1,0.05,0],[0.05,0.2,0],[0,0,0.5]]))
+	#graph = Graph([600],np.array([[0.2]]))
+	players_type = [DuplexpPlayer,DuplexpPlayerErdos,Player]
+	game = Game(graph,T,players_type,num)
 	game.run()
 	game.display()
 
