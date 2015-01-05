@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="d79d9bc3-18db-4651-b7d7-46e29ebb0954" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/code/Macao.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/code/Macao.py" afterPath="$PROJECT_DIR$/code/Macao.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="macao-hustle.iws" />
@@ -26,14 +26,14 @@
     <favorites_list name="macao-hustle" />
   </component>
   <component name="FileEditorManager">
-    <splitter split-orientation="horizontal" split-proportion="0.5">
+    <splitter split-orientation="horizontal" split-proportion="0.24864864">
       <split-first>
         <leaf>
           <file leaf-file-name="simulator.py" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/code/simulator.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="0.5834768" vertical-offset="2001" max-vertical-offset="3540">
-                  <caret line="156" column="37" selection-start-line="156" selection-start-column="0" selection-end-line="157" selection-end-column="0" />
+                <state vertical-scroll-proportion="0.8674699" vertical-offset="2271" max-vertical-offset="3540">
+                  <caret line="185" column="8" selection-start-line="185" selection-start-column="8" selection-end-line="185" selection-end-column="42" />
                   <folding>
                     <element signature="e#23#41#0" expanded="true" />
                   </folding>
@@ -44,8 +44,8 @@
           <file leaf-file-name="Macao.py" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/code/Macao.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="0.0" vertical-offset="741" max-vertical-offset="1500">
-                  <caret line="82" column="25" selection-start-line="82" selection-start-column="25" selection-end-line="82" selection-end-column="25" />
+                <state vertical-scroll-proportion="0.0" vertical-offset="846" max-vertical-offset="1965">
+                  <caret line="89" column="38" selection-start-line="89" selection-start-column="38" selection-end-line="89" selection-end-column="38" />
                   <folding />
                 </state>
               </provider>
@@ -68,9 +68,11 @@
           <file leaf-file-name="Macao.py" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/code/Macao.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="0.8450947" vertical-offset="919" max-vertical-offset="1500">
-                  <caret line="94" column="0" selection-start-line="94" selection-start-column="0" selection-end-line="94" selection-end-column="0" />
-                  <folding />
+                <state vertical-scroll-proportion="0.82323235" vertical-offset="1371" max-vertical-offset="1965">
+                  <caret line="124" column="34" selection-start-line="124" selection-start-column="34" selection-end-line="124" selection-end-column="34" />
+                  <folding>
+                    <element signature="e#23#41#0" expanded="true" />
+                  </folding>
                 </state>
               </provider>
             </entry>
@@ -467,8 +469,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/code/simulator.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.5834768" vertical-offset="2001" max-vertical-offset="3540">
-          <caret line="156" column="37" selection-start-line="156" selection-start-column="0" selection-end-line="157" selection-end-column="0" />
+        <state vertical-scroll-proportion="0.8674699" vertical-offset="2271" max-vertical-offset="3540">
+          <caret line="185" column="8" selection-start-line="185" selection-start-column="8" selection-end-line="185" selection-end-column="42" />
           <folding>
             <element signature="e#23#41#0" expanded="true" />
           </folding>
@@ -477,9 +479,11 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/code/Macao.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.8450947" vertical-offset="919" max-vertical-offset="1500">
-          <caret line="94" column="0" selection-start-line="94" selection-start-column="0" selection-end-line="94" selection-end-column="0" />
-          <folding />
+        <state vertical-scroll-proportion="0.82323235" vertical-offset="1371" max-vertical-offset="1965">
+          <caret line="124" column="34" selection-start-line="124" selection-start-column="34" selection-end-line="124" selection-end-column="34" />
+          <folding>
+            <element signature="e#23#41#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

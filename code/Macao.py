@@ -1,6 +1,7 @@
 __author__ = 'arthur'
 
 import numpy as np
+import matplotlib.pyplot as plt
 
 class Graph:
 	def __init__(self, cluster_size, r_mat):
@@ -24,7 +25,7 @@ class Graph:
 		for i in range(0,self.num_cluster):
 			obs[self.cluster_bounds[i]:self.cluster_bounds[i+1]] = np.random.choice(2, size=self.cluster_size[i], p =[1-self.r_mat[c,i], self.r_mat[c,i]])
 		obs[I] = 1
-		return obs[I]
+		return obs
 
 class Adversary:
 	def __init__(self, N):
@@ -44,14 +45,13 @@ class Player:
 		self.max_regret = np.zeros(T)
 
 	def play(self,observe,loss):
-		I = self.choose_arm()
-		N = np.size(observe(I))
+		I = self.choose_arm(observe,loss)
 		self.I[self.t] = I
 		self.regret += loss[I] - loss
 		self.max_regret[self.t]  = np.max(self.regret)
-		t += 1
+		self.t += 1
 
-	def choose_arm(self):
+	def choose_arm(self,observe,loss):
 		return np.random.randint(0,self.N)
 
 class Game:
@@ -70,25 +70,56 @@ class Game:
 		for i in range(0,self.T):
 			self.round()
 
-class DuplexpPlayer(Player):
-	def __init__(self,T):
-		super(T)
-		Toff = self.T + 2
-		Lhat = np.zeros([Toff,self.N])
-		DLhat = np.zeros([Toff,self.N])
-		p = np.zeros([Toff,self.N])
-		O = np.zeros([Toff,self.N])
-		estimate_phase = False
+	def display(self):
+		for player in self.players:
+			plt.plot(np.arange(player.T),player.max_regret)
+		plt.show()
 
-	def choose_arm(self):
+class DuplexpPlayer(Player):
+	def __init__(self,T,graph):
+		super(T)
+		self.graph = graph
+		Toff = self.T + 2
+		self.Lhat = np.zeros([Toff,self.N])
+		self.DLhat = np.zeros([Toff,self.N])
+		self.p = np.zeros([Toff,self.N])
+		self.O = np.zeros([Toff,self.N])
+		self.estimate_phase = False
+		self.last_t = np.zeros([2,np.graph.num_cluster])
+
+	def choose_arm(self,observe,loss):
 		if self.estimate_phase:
 			return super('choose_arm')
 			#TODO perform estimation
 		else:
+			K = np.zeros(self.N)
+			G = np.zeros(self.N)
 			t = self.t
 			e = t % 2
 			eta = np.sqrt(np.log(self.N)/(self.N*self.N)
 						  + np.sum(np.multiply(self.p[e:t:2],self.DLhat[e:t:2],self.DLhat[e:t:2])))
 			w = 1/self.N * np.exp(-eta*self.Lhat[t-2,:])
-			p = w/np.sum(self.w)
-			I[t] = np.random.choice(N,p=p[t,:])
+			I = np.random.choice(self.N,p=self.p[t,:])
+			self.O[t,:] = observe(self.I[t])
+			c = self.graph.find_cluster(self.I[t])
+			M = np.zeros(self.graph.num_cluster)
+			for k in range(0,self.graph.num_cluster):
+				Oc = self.O[self.last_t[e,c],self.graph.C[k]]
+				if k == c:
+					Oc = np.delete(Oc,self.I[self.last_t[e][c]])
+				min_i = np.nonzero(Oc)[0]
+				M[k] = min_i[0] if np.size(min_i) > 0 else self.graph.cluster_size(k)-1
+			for i in range(0,self.N):
+				c= self.graph.find_cluster(i)
+				K[i] = np.random.geometric(self.p[t,i])
+				G[i] = min(M[c],K[i])
+			lhat = np.multiply(loss,self.O[t,:],G)
+			self.DLhat[t,:] = lhat
+			self.Lhat[t,:] = self.Lhat[t-2,:]+self.DLhat[t,:]
+			return I
+
+
+def test():
+	graph = Graph([500,500],np.array([[0.1,0.05],[0.05,0.2]]))
+	adversary = Adversary(graph.N)
+	players = [DuplexpPlayer(1000,)]
