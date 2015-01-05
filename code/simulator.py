@@ -9,14 +9,14 @@ N2 = 1000
 N = N1 + N2
 C1 = np.arange(N1)
 C2 = np.arange(N2)+N1
-T = 5000
+T = 1000
 r11 = 0.1
 r22 = 0.2
 r12 = 0.05
 r21 = 0.05
 
 def loss():
-	return np.hstack((np.random.uniform(4,8,size=[200]),np.random.uniform(0,1,size=[800])))
+	return np.hstack((np.random.uniform(4,8,size=[200]),np.random.uniform(0,1,size=[1800])))
 	#return np.arange(N)
 
 def observed(I):
@@ -26,11 +26,11 @@ def observed(I):
 		rand[I] = 1
 		rand[C2] = np.random.choice(2, size=N2, p =[1-r12, r12])
 	else:
-		rand[C2] = np.random.choice(2, size=N2, p =[1-r12, r12])
+		rand[C2] = np.random.choice(2, size=N2, p =[1-r22, r22])
 		rand[I] = 1
-		rand[C1] = np.random.choice(2, size=N1, p =[1-r21, r12])
+		rand[C1] = np.random.choice(2, size=N1, p =[1-r21, r21])
 
-	return rand, np.nonzero(rand)[0]
+	return rand#, np.nonzero(rand[C1])[0],np.nonzero(rand[C2])[0]
 
 def play_naive():
 	regret = np.zeros(N)
@@ -94,8 +94,8 @@ def play_duplex():
 		for j in range(0,A):
 			l[t+j,:] = loss()
 			I[t+j] = np.random.choice(N,p=p[t,:])
-			O[t+j,:], O_index = observed(I[t+j])
-			observed_loss.append(np.hstack((O_index, l[t+j,O_index])))
+			O[t+j,:] = observed(I[t+j])
+			#observed_loss.append(np.hstack((O_index, l[t+j,O_index])))
 			Od = np.nonzero(np.delete(O[t-A+j,:],I[t-A+j]))
 			if np.size(Od[0]) >0:
 				M[t+j] = Od[0][0]
@@ -114,8 +114,9 @@ def play_duplex():
 		Lhat[t,:] = Lhat[t-2,:]+DLhat[t,:]
 
 	max_regret = np.hstack((max_regret_start,max_regret[1+A:]))
-	plt.plot(np.arange(np.size(max_regret)),max_regret)
-	plt.show()
+	return max_regret
+	#plt.plot(np.arange(np.size(max_regret)),max_regret,np.arange(np.size(max_regret)),max_regret_naive)
+	#plt.show()
 
 def play_duplex_simple():
 	Toff = T+2
@@ -132,7 +133,7 @@ def play_duplex_simple():
 	I = np.zeros([Toff])
 	observed_loss = []
 
-	M = np.zeros([Toff])
+	M = np.zeros([Toff,2])
 	K = np.zeros([Toff,N])
 	G = np.zeros([Toff,N])
 
@@ -142,8 +143,7 @@ def play_duplex_simple():
 	max_regret_naive = np.zeros(Toff)
 	I_naive = np.zeros(Toff)
 
-	last_t1  = 0
-	last_t2 = 0
+	last_t  = np.array([[0,0],[0,0]])
 
 	#round = np.int(Toff / A)
 	for t in range(2,Toff):
@@ -155,28 +155,41 @@ def play_duplex_simple():
 
 		l[t,:] = loss()
 		I[t] = np.random.choice(N,p=p[t,:])
-		O[t,:], O_index = observed(I[t])
-		observed_loss.append(np.hstack((O_index, l[t,O_index])))
-		Od = np.nonzero(np.delete(O[t-1,:],I[t-1]))
+		cluster = 0 if I[t] in C1 else 1
+		O[t,:] = observed(I[t])
+		#observed_loss.append(np.hstack((O_index, l[t,O_index])))
+
+		Od = [None] * 2
+		Od[0] = np.nonzero(np.delete(O[last_t[e][cluster],C1],I[last_t[e][cluster]]) if cluster == 0 else O[last_t[e][cluster],C1])[0]
 		if np.size(Od[0]) >0:
-			M[t] = Od[0][0]
+			M[t,0] = Od[0][0]
 		else:
-			M[t] = N-1
+			M[t,0] = N1-1
+		Od[1] = np.nonzero(np.delete(O[last_t[e][cluster],C2],I[last_t[e][cluster]]) if cluster == 1 else O[last_t[e][cluster],C2])[0]
+		if np.size(Od[1]) >0:
+			M[t,1] = Od[1][0]
+		else:
+			M[t,1] = N2-1
+
 		for i in range(0,N):
+			clu = 0 if i in C1 else 1
 			K[t,i] = np.random.geometric(p[t,i])
-			G[t,i] = min(M[t],K[t,i])
+			G[t,i] = min(M[t,clu],K[t,i])
+
 		lhat[t,:] = np.multiply(l[t,:],O[t,:],G[t,:])
 		regret += l[t,I[t]]-l[t,:]
 		max_regret[t] = np.max(regret)
 		I_naive[t] = np.random.randint(0,1000)
-		regret_naive += l[t,I_naive[t]]-l[t+j,:]
+		regret_naive += l[t,I_naive[t]]-l[t,:]
 		max_regret_naive[t] = np.max(regret_naive)
 		DLhat[t,:] = lhat[t,:]
 		Lhat[t,:] = Lhat[t-2,:]+DLhat[t,:]
+		last_t[e][cluster] = t
+		I[t] = np.nonzero(C1 == I[t])[0][0] if cluster == 0 else np.nonzero(C2 == I[t])[0][0]
 
-	max_regret = np.hstack((max_regret_start,max_regret[1+A:]))
-	plt.plot(np.arange(np.size(max_regret)),max_regret)
-	plt.show()
+	return max_regret
+	# plt.plot(np.arange(np.size(max_regret)),max_regret)
+	# plt.show()
 
 
 
@@ -192,7 +205,7 @@ def estimate_r():
 		I = np.random.randint(0,N)
 		regret += l[I]-l
 		max_regret.append(np.max(regret))
-		O, O_index = observed(I)
+		O = observed(I)
 		c += np.sum(O) - 1
 	if c/(C*(N-1)) <= 3 /(2*N):
 		return 0,C,np.array(max_regret)
@@ -202,7 +215,7 @@ def estimate_r():
 			I= np.random.randint(0,N)
 			regret += l[I]-l
 			max_regret.append(np.max(regret))
-			O, O_index = observed(I)
+			O = observed(I)
 			M = np.zeros(k)
 			for i in range(0,N):
 				M[j] = M[j] + (i != I)
@@ -212,4 +225,7 @@ def estimate_r():
 		return 0,T,np.array(max_regret)
 
 if __name__ == '__main__':
-	play_duplex()
+	max_regret_r = play_duplex()
+	max_regret_r1r2 = play_duplex_simple()
+	plt.plot(np.arange(np.size(max_regret_r)),max_regret_r,np.arange(np.size(max_regret_r1r2)),max_regret_r1r2)
+	plt.show()
