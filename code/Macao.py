@@ -101,7 +101,7 @@ class Player:
 		self.max_regret = np.zeros(self.T)
 
 	def play(self,observe,loss):
-		I = self.choose_arm(observe,loss)
+		I = self.choose_arm(observe,loss[self.t,:])
 		self.I[self.t] = I
 		self.regret += loss[self.t,I] - loss[self.t]
 		self.max_regret[self.t]  = np.max(self.regret)
@@ -156,7 +156,7 @@ class DuplexpPlayer(Player):
 				c= self.graph.find_cluster(i)
 				K = np.random.geometric(self.p[t,i])
 				G[i] = min(M[c],K)
-			lhat = np.multiply(np.multiply(loss[t],self.O[t,:]),G)
+			lhat = np.multiply(np.multiply(loss,self.O[t,:]),G)
 			self.DLhat[t,:] = lhat
 			self.Lhat[t,:] = self.Lhat[t-2,:]+self.DLhat[t,:]
 			return I
@@ -203,7 +203,7 @@ class DuplexpPlayerErdos(Player):
 			for i in range(0,self.N):
 				K = np.random.geometric(self.p[t,i])
 				G[i] = min(M,K)
-			lhat = np.multiply(np.multiply(loss[t,:],self.O[t,:]),G)
+			lhat = np.multiply(np.multiply(loss,self.O[t,:]),G)
 			self.DLhat[t,:] = lhat
 			self.Lhat[t,:] = self.Lhat[t-2,:]+self.DLhat[t,:]
 			return I
