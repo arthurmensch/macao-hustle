@@ -1,0 +1,235 @@
+%% Based on a TeXnicCenter-Template by Tino Weinkauf.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% HEADER
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\documentclass[a4paper,twoside,10pt]{report}
+% Alternative Options:
+%	Paper Size: a4paper / a5paper / b5paper / letterpaper / legalpaper / executivepaper
+% Duplex: oneside / twoside
+% Base Font Size: 10pt / 11pt / 12pt
+
+
+%% Language %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage[USenglish]{babel} %francais, polish, spanish, ...
+\usepackage[T1]{fontenc}
+\usepackage[ansinew]{inputenc}
+
+\usepackage{lmodern} %Type1-font for non-english texts and characters
+
+
+%% Packages for Graphics & Figures %%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{graphicx} %%For loading graphic files
+%\usepackage{subfig} %%Subfigures inside a figure
+%\usepackage{pst-all} %%PSTricks - not useable with pdfLaTeX
+
+%% Please note:
+%% Images can be included using \includegraphics{Dateiname}
+%% resp. using the dialog in the Insert menu.
+%% 
+%% The mode "LaTeX => PDF" allows the following formats:
+%%   .jpg  .png  .pdf  .mps
+%% 
+%% The modes "LaTeX => DVI", "LaTeX => PS" und "LaTeX => PS => PDF"
+%% allow the following formats:
+%%   .eps  .ps  .bmp  .pict  .pntg
+
+
+%% Math Packages %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amsfonts}
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode}
+%% Line Spacing %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\usepackage{setspace}
+%\singlespacing        %% 1-spacing (default)
+%\onehalfspacing       %% 1,5-spacing
+%\doublespacing        %% 2-spacing
+
+
+%% Other Packages %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\usepackage{a4wide} %%Smaller margins = more text per page.
+%\usepackage{fancyhdr} %%Fancy headings
+%\usepackage{longtable} %%For tables, that exceed one page
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Remarks
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% TODO:
+% 1. Edit the used packages and their options (see above).
+% 2. If you want, add a BibTeX-File to the project
+%    (e.g., 'literature.bib').
+% 3. Happy TeXing!
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Options / Modifications
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%\input{options} %You need a file 'options.tex' for this
+%% ==> TeXnicCenter supplies some possible option files
+%% ==> with its templates (File | New from Template...).
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% DOCUMENT
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+
+\pagestyle{empty} %No headings for the first pages.
+
+
+%% Title Page %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% ==> Write your text here or include other files.
+
+%% The simple version:
+\title{Title of this document}
+\author{Firstname Lastname}
+%\date{} %%If commented, the current date is used.
+\maketitle
+
+%% The nice version:
+%\input{titlepage} %%You need a file 'titlepage.tex' for this.
+%% ==> TeXnicCenter supplies a possible titlepage file
+%% ==> with its templates (File | New from Template...).
+
+
+%% Inhaltsverzeichnis %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\tableofcontents %Table of contents
+\cleardoublepage %The first chapter should start on an odd page.
+
+\pagestyle{plain} %Now display headings: headings / fancy / ...
+
+
+
+%% Chapters %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% ==> Write your text here or include other files.
+
+%\input{intro} %You need a file 'intro.tex' for this.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% ==> Some hints are following:
+
+
+\section{Abstract}
+The problem we worked on can be describe like this : We consider a multi-armed bandit where the arms are divided up in several classes. Every time the learner chooses an arm, not only he observes the loss of this arm but can also have informations about losses of non-chosen arms. In our case, we consider that when the learner choose a arm of the class $i$, the other arms of the class $i$ have the probability $r_{ii}$ to reveal their loss and the other arms of a class $j$ have the probability $r_{ij}$. So the problem is characterized by the matrix $R$ which represents the probabilies of communication between two arms of differents classes. 
+
+\section{Case with one class}
+
+We first consider the case where we have one class to explain the algorithms we adapted to fit our model.\newline
+This can be identified as a social graph with Facebook-like settings where we consider that for a person, his group of friends is homogenous enough.\newline
+
+Then the problem is reduced to the situation where all non-chosen arms reveal their loss with and unknown probability $r_{11}=r$. This can be modeled by Erd?s-Rényi random graphs with parameter r; i.e. at each step $t$ we are in the situation as if from $N$ vertices, we constructed an edge between $i$ and $j$ with the probability $r$. Then after chosing and arm $I_t$, all the information about losses recieved additionnaly at this step t correspond to the arms (or vertices in the graph) that are connected to $I_t$ with an edge.
+
+\subsection{Problem definition}
+We consider a sequential set on iteractions with the multi-armed bandit we assume to have $N$ arms, for each step t=1,..,T these are the actions performed by the environment : 
+\begin{enumerate}
+\item The environment chooses losses for every arm noted $l_{t,i}$ for the arm $i$ at the step $t$.
+\item Following the algorithm we hope would minize as much as possible the regret the player draws an arm $I_t$.
+\item The player recieves the losse $l_{t,I_t}$.
+\item $O_{t,I_t}=1$ and $\forall i,\ i\neq I_t$, $O{t,i}$ is drawn from a Bernouilli distribution with mean r. These other $O_{t,i}$ corresponds to the value of the logic expression $ i \ is\ neighboor\ of\ I_t$ in the Erd?s-Rényi random graph of the step t.
+\item $\forall i$ such that $O_{t,i}=1$ the player can observe the loss $l_{t,i}$.
+\end{enumerate}
+ 
+We write $p_{t,i}=\mathbb{P}[I_t=i|\mathcal{F}_{t-1}]$ where $\mathcal{F}_{t-1}$ corresponds to all the actions and observations the player had until the step t. Then intuitively the probability of observing the loss of the arm $i$ at the step $t$ would be $q_{t,i}=p_{t,i} + (1-p_{t,i})r$ and to use the \textsc{Exp}$3$
+the the loss estimate :
+\[
+\hat{l}_{t,i}=\frac{O_{t,i}l_{t,i}}{q_{t,i}}.
+\]
+But the main problem resides in the fact that $r$ is unknown so the algorithms presented use tricks to obtain loss estimates such that we keep the property :
+\[
+\mathbb{E}[\hat{l}_{t,i}|\mathcal{F}_{t-1}]=l_{t,i}
+\]
+The principal idea is to have access to two \textbf{independant} geometrically distributed random variables $M_t^*$ and $K_{t,i}$ with respective parameters $r$ and $p_{t,i}$, then the variable $G_{t,i}^*=min\ \{K_{t,i},M_t^*\}$ is also geometrically distributed with the parameter $q_{t,i}$ previously defined. Then if we have $G_{t,i}^*$ \textbf{independant} of $O_{t,i}$ we can replace in the definition of $\hat{l}_{t,i}$, $\frac{1}{q_{t,i}}$ by $G_{t,i}^*$.
+
+\subsection{\textsc{DuplExp3} for large values of r}
+We assume $ r\geq \frac{log(T)}{2N}$, which implies that the probability of having no additionnal observations in round t is bounded by $\frac{1}{\sqrt{T}}$.\newline
+This algorithm needs two \textsc{Exp3} sub-algorithms, one for the round when t is even and the other one for the rest so that we can construct independant $M_t^*$ and $K_{t,i}$ and indenpendant $G_{t,i}^*$ and $O_{t,i}$.
+Then the algorithm compute :
+\[
+p_{t+2,i}\propto w_{t+2,i}= \frac{1}{N} exp\left( -\eta_{t+2} \hat{L}_{t,i} \right)
+\]
+Where $\hat{L}_{t,i}=\sum_{k=0}^{t/2} \hat{l}_{t-2k,i}$ the cumulative sum of the loss estimates for the arm $i$ for one of the \textsc{Exp3} sub-algorithms.
+Then $M_t^*$ is constructed like this : 
+\begin{itemize}
+\item We define $O_{t,i}^{'} \ i=1,...,N-1$
+\item $\forall i<I_{t}\ O_{t,i}^{'}=O_{t,i}$
+\item	$\forall N\geq i>I_{t}\ O_{t,i-1}^{'}=O_{t,i}$
+\end{itemize}
+
+\[
+M_t^* =min\ \{1\leq i<N: O_{t-1,i}^{'} =1\}\cup\{N\}
+\]
+Then $M_t$ follows a truncated geometric law. We also define $K_{t,i}$ as a geometric random variable with parameter $p_{t,i}$ computed a the step $t-2$. The since $M_t$ depends of $O_{t-1}$ and $p_{t,i}$ of $O_{t-2}$ they are obviously independant. That's why we can consider :
+\[
+	G_{t,i}=min\ \{K_{t,i},M_t\}
+\]
+And then as expected $G_{t,i}$ is independant of $O_{t,i}$. Finally, the loss estimate becomes :
+\[
+\hat{l_{t,i}}=G_{t,i}O_{t,i}l_{t,i}q_{t,i}.
+\]
+With the duplex algorithm. In this case with the right $\eta_t$ we find the upper-bound for the regret : 
+\[
+R_T \leq 4 \sqrt{\left(\frac{T}{r}+N^2\right)log N}+sqrt{T}
+\]
+\subsection{Estimate r}
+However, a problem remains in this algorithm ; since we don't know a priori what is the value of r, we can't ensure that $ r\geq \frac{log(T)}{2N}$ as we did the assumption previously. So we need to find a lower bound on $r$ to know in which case we probably are. The algorithm $Estimating\ \underline{r}$ returns the argument $\underline{r}$ with the following properties : 
+\[
+\mathbb{P} [\underline{r}\leq r]\geq 1-\frac{1}{\sqrt{T}}
+\]
+\[
+if\ r\leq \frac{1}{N}\ \mathbb{P} [\underline{r}=0]=1-\frac{1}{\sqrt{T}} 
+\]
+\[
+if\ r\geq \frac{2}{N}\ \mathbb{P} [\underline{r}=0]\leq \frac{1}{\sqrt{T}} 
+\]
+
+
+%% <== End of hints
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% BIBLIOGRAPHY AND OTHER LISTS
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% A small distance to the other stuff in the table of contents (toc)
+\addtocontents{toc}{\protect\vspace*{\baselineskip}}
+
+%% The Bibliography
+%% ==> You need a file 'literature.bib' for this.
+%% ==> You need to run BibTeX for this (Project | Properties... | Uses BibTeX)
+%\addcontentsline{toc}{chapter}{Bibliography} %'Bibliography' into toc
+%\nocite{*} %Even non-cited BibTeX-Entries will be shown.
+%\bibliographystyle{alpha} %Style of Bibliography: plain / apalike / amsalpha / ...
+%\bibliography{literature} %You need a file 'literature.bib' for this.
+
+%% The List of Figures
+\clearpage
+\addcontentsline{toc}{chapter}{List of Figures}
+\listoffigures
+
+%% The List of Tables
+\clearpage
+\addcontentsline{toc}{chapter}{List of Tables}
+\listoftables
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% APPENDICES
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\appendix
+%% ==> Write your text here or include other files.
+
+%\input{FileName} %You need a file 'FileName.tex' for this.
+
+
+\end{document}
+
