@@ -16,7 +16,6 @@ pgf_with_pdflatex = {
 mpl.rcParams.update(pgf_with_pdflatex)
 
 import matplotlib.pyplot as plt
-import pickle
 
 
 class Graph:
@@ -81,12 +80,10 @@ class Game:
 			for j in range(0,self.num_players):
 				self.max_regret[:,j] += self.players[j].max_regret
 		self.max_regret /= self.number
-		pickle.dump(self.max_regret,open('max_regret.p','wb+'))
 
 	def display(self):
-		self.max_regret = pickle.load(open('max_regret.p','rb'))
-		for i in range(0, self.num_players):
-			plt.plot(np.arange(self.T), self.max_regret[:, i], label=self.players_type[i].playerName)
+		for i in range(0,self.num_players):
+			plt.plot(np.arange(self.T),self.max_regret[:,i],label = self.players_type[i].playerName())
 		plt.legend(loc=2)
 		plt.savefig('regret.pdf')
 
@@ -110,7 +107,11 @@ class Player:
 	def choose_arm(self,observe,loss):
 		return np.random.randint(0,self.N)
 
-	playerName = 'Naive Player'
+	def __str__(self):
+		return 'Naive Player'
+
+	def playerName():
+		return 'Naive Player'
 
 class DuplexpPlayer(Player):
 	def __init__(self,game):
@@ -161,8 +162,11 @@ class DuplexpPlayer(Player):
 			self.Lhat[t,:] = self.Lhat[t-2,:]+self.DLhat[t,:]
 			return I
 
-	playerName = 'Duplex SBM'
+	def __str__(self):
+		return 'Duplexp'
 
+	def playerName():
+		return 'Duplexp SBM'
 
 class DuplexpPlayerErdos(Player):
 	def __init__(self,game):
@@ -178,6 +182,8 @@ class DuplexpPlayerErdos(Player):
 
 	def choose_arm(self,observe,loss):
 		if self.estimate_phase:
+			r=estimate_phase(self)#regrets
+			printf(r)
 			return super('choose_arm')
 			#TODO perform estimation
 		else:
@@ -246,6 +252,8 @@ class DuplexpPlayerErdos(Player):
 			return r
 		else:
 			for i in range(0,self.graph.num_cluster):
+                                if isNull[i] and isNull[self.graph.num_cluster+i]
+                                        continue;
 				for t in range(s,T):
 					l = loss()
 					I= np.random.randint(self.graph.cluster_bounds[i],self.graph.cluster_bounds[i+1])
@@ -269,14 +277,18 @@ class DuplexpPlayerErdos(Player):
 								if j2 == k:
 									r[self.graph.num_cluster+i]=1/(np.max(M2)+1)
 
-				if r[i]>0 and( i==self.graph.num_cluster-1 or r[self.graph.num_cluster+i]>0 ) :
+				if (r[i]>0 or isNull[i]) and( i==self.graph.num_cluster-1 or r[self.graph.num_cluster+i]>0 or isNull[self.graph.num_cluster+i] ) :
 					s=t
 					break
 			self.t=t
 			self.regret=np.array(max_regret)
 			return r
 
-	playerName = 'Duplex Erdös'
+	def __str__(self):
+		return 'Duplexp Erdös'
+
+	def playerName():
+		return 'Duplexp Erdös'
 
 def test():
 	T = 10
