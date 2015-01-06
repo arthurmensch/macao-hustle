@@ -129,7 +129,6 @@ class DuplexpPlayer(Player):
 	def play(self,observe,loss):
 		if self.estimate_phase :
 			r,I,s=self.estimate_rs(observe,loss)
-			print(r)
 			for k in range(0,len(I)-1):
 				self.I[self.t+k]=I[k]
 				self.regret += loss[self.t+k,I[k]] - loss[self.t+k,:]
@@ -177,76 +176,79 @@ class DuplexpPlayer(Player):
 		I=[]
 		s_int=0
 		k = np.int(np.ceil(math.e * np.log(self.T)/2))
-		C=np.zeros(self.graph.num_cluster+1)
+		C=np.zeros(self.graph.num_cluster)
 		for i in range(0,self.graph.num_cluster):
 			C[i]= np.int(np.ceil(2*np.log(self.T)/self.graph.cluster_size[i]))
 		s=0
-		c = np.zeros(2*self.graph.num_cluster-1)
-		is_nul=np.zeros(2*self.graph.num_cluster-1)
-		r=np.zeros(2*self.graph.num_cluster-1)
-		for i in range(0,self.graph.num_cluster-1):
-			lim=int(min(max(s+C[i],s+C[i+1]),T))
+		c = np.zeros((self.graph.num_cluster,self.graph.num_cluster))
+		is_nul=np.zeros((self.graph.num_cluster,self.graph.num_cluster))
+		r=np.zeros((self.graph.num_cluster,self.graph.num_cluster))
+		for i in range(0,self.graph.num_cluster):
+			lim=int(min(s+np.max(C),T))
 			for t in range(s,lim):
 				l = loss[t]
-				I.append(np.random.randint(self.graph.cluster_bounds[i+1],self.graph.cluster_bounds[i+2]))
+				I.append(np.random.randint(self.graph.cluster_bounds[i],self.graph.cluster_bounds[i+1]))
 				O = observe(I[t])
 				self.O[t,:]=O
-				if (t-s)<C[i] :
-					c[i] += np.sum(O[self.graph.cluster_bounds[i]:self.graph.cluster_bounds[i+1]]) - 1
-				if i<self.graph.num_cluster-1 and (t-s)<C[i+1]:
-					c[self.graph.num_cluster+i] +=np.sum(O[self.graph.cluster_bounds[i+1]:self.graph.cluster_bounds[i+2]])
+				for j in range(0,self.graph.num_cluster):
+					if (t-s)<C[j] and i==j:
+						c[i,j] += np.sum(O[self.graph.cluster_bounds[j]:self.graph.cluster_bounds[j+1]]) - 1
+					elif (t-s)<C[j]:
+						c[i,j] +=np.sum(O[self.graph.cluster_bounds[j]:self.graph.cluster_bounds[j+1]])
 				s_int=t+1
 			s=s_int
-			if c[i]/(C[i]*(self.graph.cluster_size[i]-1))<=3/2*self.graph.cluster_size[i]:
-				is_nul[i]=1;
-			if i<self.graph.num_cluster-1 and c[self.graph.num_cluster+i]/(C[i+1]*self.graph.cluster_size[i+1])<=3/(2*self.graph.cluster_size[i+1]):
-				is_nul[self.graph.num_cluster+i]=1;
-		allnul=0;
-		for i in range(0,2*self.graph.num_cluster-1):
-			if is_nul[i]==0:
-				allnul += 1
+			for j in range(0,self.graph.num_cluster):
+				if i==j and c[i,i]/(C[i]*(self.graph.cluster_size[i]-1))<=3/(2*self.graph.cluster_size[i]):
+					is_nul[i,i]=1;
+				if c[i,j]/(C[j]*self.graph.cluster_size[j])<=3/(2*self.graph.cluster_size[j]):
+					is_nul[i,j]=1;
+		all_nul=1
+		for i in range(0,self.graph.num_cluster):
+			for j in range(0,self.graph.num_cluster):
+				if is_nul[i,j]==0:
+					all_nul = 0
+					break
+			if all_nul==0:
 				break
-		if allnul==2*self.graph.num_cluster-2:
-			#all rbar equal to 0
+		if all_nul==1:
+			#all rbar are nul, equal to 0
 			return r,I,t
+
 		else:
-			for i in range(0,self.graph.num_cluster-1):
-				if is_nul[i] and is_nul[self.graph.num_cluster+i]:
-					continue;
-				j1=0
-				j2=0
+			for i in range(0,self.graph.num_cluster):
+				all_nul=1
+				for j in range(0,self.graph.num_cluster):
+					if(is_nul[i,j]==0):
+						all_nul=0
+						break
+
+				if all_nul==1:
+					continue
+
 				for t in range(s,T):
-					print(s)
 					l = loss[t]
 					I.append(np.random.randint(self.graph.cluster_bounds[i],self.graph.cluster_bounds[i+1]))
 					O= observe(I[t])
 					self.O[t,:]=O
-					M1 = np.zeros(k)
-					M2 = np.zeros(k)
+					M = np.zeros((self.graph.num_cluster,k))
+					ind=np.zeros(self.graph.num_cluster)
 					s_int=t+1
-					if r[i]==0:
-						for j in range(self.graph.cluster_bounds[i],self.graph.cluster_bounds[i+1]):
-							M1[j1] = M1[j1] + (j != I[t])
-							j1 = j1 + O[j] * (j != I[t])
-							if j1 == k:
-								r[i]=1/(np.max(M1)+1)
-								break;
-
-					if i<self.graph.num_cluster-1:
-						if r[self.graph.num_cluster+i]==0:
-							for j in range(self.graph.cluster_bounds[i+1],self.graph.cluster_bounds[i+2]):
-								M2[j2] = M2[j2] + (j != I[t])
-								j2 = j2 + O[j] * (j != I[t])
-								if j2 == k:
-									r[self.graph.num_cluster+i]=1/(np.max(M2)+1)
-									break;
-
-
-				if (r[i]>0 or is_nul[i]) and( i==self.graph.num_cluster-1 or r[self.graph.num_cluster+i]>0 or is_nul[self.graph.num_cluster+i] ) :
-					s=s_int
-					break
+					for j in range(0,self.graph.num_cluster):
+						if r[i,j]==0 and is_nul[i,j]==0:
+							for m in range(self.graph.cluster_bounds[j],self.graph.cluster_bounds[j+1]):
+								M[j,ind[j]] = M[j,ind[j]] + (m != I[t])
+								ind[j] = ind[j] + O[m] * (m != I[t])
+								if ind[j] == k:
+									r[i,j]=1/(np.max(M[j,:])+1)
+									break
+					next_class=0
+					for j in range(0,self.graph.num_cluster):
+						next_class+=(r[i,j]>0 or is_nul[i,j]==1)
+					if next_class==self.graph.num_cluster:
+						s=s_int
+						break
 				s=s_int
-			return r,I,t
+			return r,I,s
 
 class DuplexpPlayerErdos(Player):
 	playerName = 'Duplexp Erdös'
@@ -295,7 +297,7 @@ class DuplexpPlayerErdos(Player):
 			return I
 
 def test():
-	T = 10
+	T = 1000
 	num = 50
 	graph = Graph([200,200,200],np.array([[0.1,0.05,0],[0.05,0.2,0],[0,0,0.5]]))
 	#graph = Graph([600],np.array([[0.2]]))
