@@ -128,7 +128,7 @@ class DuplexpPlayer(Player):
 
 	def play(self,observe,loss):
 		if self.estimate_phase :
-			r,I,s=self.estimate_rs(observe,loss)
+			r,I,s=self.estimate_r(observe,loss)
 			for k in range(0,len(I)-1):
 				self.I[self.t+k]=I[k]
 				self.regret += loss[self.t+k,I[k]] - loss[self.t+k,:]
@@ -171,7 +171,7 @@ class DuplexpPlayer(Player):
 		self.Lhat[t,:] = self.Lhat[t-2,:]+self.DLhat[t,:]
 		return I
 
-	def estimate_rs(self,observe,loss):
+	def estimate_r(self,observe,loss):
 		T=self.T
 		I=[]
 		s_int=0
@@ -212,7 +212,7 @@ class DuplexpPlayer(Player):
 				break
 		if all_nul==1:
 			#all rbar are nul, equal to 0
-			return r,I,t
+			return r,I,s
 
 		else:
 			for i in range(0,self.graph.num_cluster):
@@ -224,14 +224,13 @@ class DuplexpPlayer(Player):
 
 				if all_nul==1:
 					continue
-
+				M = np.zeros((self.graph.num_cluster,k))
+				ind=np.zeros(self.graph.num_cluster)
 				for t in range(s,T):
 					l = loss[t]
 					I.append(np.random.randint(self.graph.cluster_bounds[i],self.graph.cluster_bounds[i+1]))
 					O= observe(I[t])
 					self.O[t,:]=O
-					M = np.zeros((self.graph.num_cluster,k))
-					ind=np.zeros(self.graph.num_cluster)
 					s_int=t+1
 					for j in range(0,self.graph.num_cluster):
 						if r[i,j]==0 and is_nul[i,j]==0:
@@ -241,6 +240,8 @@ class DuplexpPlayer(Player):
 								if ind[j] == k:
 									r[i,j]=1/(np.max(M[j,:])+1)
 									break
+								else:
+									M[j,ind[j]]=0
 					next_class=0
 					for j in range(0,self.graph.num_cluster):
 						next_class+=(r[i,j]>0 or is_nul[i,j]==1)
@@ -260,9 +261,20 @@ class DuplexpPlayerErdos(Player):
 		self.DLhat = np.zeros([Toff,self.N])
 		self.p = np.zeros([Toff,self.N])
 		self.O = np.zeros([Toff,self.N])
-		self.estimate_phase = False
+		self.estimate_phase = True
 		self.last_t = np.zeros(2)
 
+	def play(self,observe,loss):
+		if self.estimate_phase :
+			r,I,s=self.estimate_r(observe,loss)
+			for k in range(0,len(I)-1):
+				self.I[self.t+k]=I[k]
+				self.regret += loss[self.t+k,I[k]] - loss[self.t+k,:]
+				self.max_regret[self.t+k] = np.max(self.regret)
+			self.t+=s
+			self.estimate_phase=False
+		else :
+			super().play
 
 	def choose_arm(self,observe,loss):
 		if self.estimate_phase:
@@ -295,6 +307,40 @@ class DuplexpPlayerErdos(Player):
 			self.DLhat[t,:] = lhat
 			self.Lhat[t,:] = self.Lhat[t-2,:]+self.DLhat[t,:]
 			return I
+
+	def estimate_r(self,observe,loss):
+		T=self.T
+		I=[]
+		s_int=0
+		k = np.int(np.ceil(math.e * np.log(self.T)/2))
+		C=np.int(np.ceil(2*np.log(self.T)/self.N))
+		c = 0
+		j = 0
+		M = np.zeros(k)
+		for t in range(0,C):
+			I.append(np.random.randint(0,self.N))
+			O = observe(I[t])
+			self.O[t,:]=O
+			c += np.sum(O) - 1
+
+		if c/(C*(self.N-1))<=3/(2*self.N):
+			return 0,I,C
+
+		else:
+			for t in range(C,T):
+				I.append(np.random.randint(0,self.N))
+				O= observe(I[t])
+				self.O[t,:]=O
+				s_int=t+1
+				for i in range(0,self.N):
+					M[j] = M[j] + (i != I[t])
+					j = j + O[i] * (i != I[t])
+					if j == k:
+						r=1/(np.max(M)+1)
+						return r,I,s_int
+					else:
+						M[j]=0
+			return 0,I,T
 
 def test():
 	T = 1000
