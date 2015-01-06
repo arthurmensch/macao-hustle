@@ -84,7 +84,7 @@ class Game:
 		pickle.dump(self.max_regret, open('data/max_regret.p','wb+'))
 
 	def display(self):
-		pickle.load(open('max_regret.p','rb'))
+		pickle.load(open('data/max_regret.p','rb'))
 		for i in range(0,self.num_players):
 			plt.plot(np.arange(self.T),self.max_regret[:,i],label = self.players_type[i].playerName)
 		plt.legend(loc=2)
