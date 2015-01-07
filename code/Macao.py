@@ -147,8 +147,7 @@ class DuplexpPlayer(Player):
 			
 	def choose_arm(self,observe,loss):
 		t = self.t
-		if self.t - self.tstart % self.A:
-			self.episode += 1
+		if (self.t - self.tstart) % self.A == 0:
 			e = self.episode % 2
 			self.Lhat[self.episode,:] = self.Lhat[self.episode-2,:]+self.DLhat[self.episode,:]
 			eta = np.sqrt(np.log(self.N)/((self.N*self.N)
@@ -157,6 +156,7 @@ class DuplexpPlayer(Player):
 			w = w - np.max(w)
 			w = np.exp(w)
 			self.p[t,:] = w/np.sum(w)
+			self.episode += 1
 			self.last_t[e,:] = self.last_t_immediate[e,:].copy()
 		else: #no p update
 			e = self.episode % 2
@@ -270,7 +270,7 @@ class DuplexpPlayerErdos(DuplexpPlayer):
 		self.graph = Graph([sum(self.graph.cluster_size)],[1])
 
 def test():
-	T = 10000
+	T = 1000
 	num = 1
 	graph = Graph([100,100,100],np.array([[0.1,0.5,0],[0.05,0.2,0.5],[0.5,0.5,0.05]]))
 	#graph = Graph([600],np.array([[0.2]]))
