@@ -241,7 +241,7 @@ class DuplexpPlayer(Player):
 								if ind[j] == k:
 									r[i,j]=1/(np.max(M[j,:])+1)
 									break
-								else:
+								elif m == self.graph.cluster_bounds[j+1]-1:
 									M[j,ind[j]]=0
 					next_class=0
 					for j in range(0,self.graph.num_cluster):
@@ -351,7 +351,7 @@ def test():
 	num = 1
 	graph = Graph([200,200,200],np.array([[0.1,0.5,0],[0.05,0.2,0],[0,0,0.05]]))
 	#graph = Graph([600],np.array([[0.2]]))
-	players_type = [DuplexpPlayerErdos]
+	players_type = [DuplexpPlayer]
 	game = Game(graph,T,players_type,num)
 	game.run()
 	game.display()
