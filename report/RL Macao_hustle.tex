@@ -118,16 +118,17 @@ Then we can consider that r is probably large enough to run the previously algor
 \paragraph{} If $\underline{r}=0$ : \\
 We consider that $r$ is really equal to $0$ and run vanilla \textsc{Exp3} with parameter $\eta=\sqrt{\left(2\ log\ N \right)/\left(TN\right)}$ from the step $\tau$.
 
-\paragraph{}If $0< \underline{r} < \frac{log\ T}{N}$ :
+\paragraph{}If $0< \underline{r} < \frac{log\ T}{N}$ :\\
 Then $r$ might be too small so we can have have side information and so have a biased estimation $r$ during the steps. In this case, we use a simple trick to reattach to the case of \textsc{DuplExp3} : The new algorithm groups multiple steps together so that it was as if the number of episodes became,
 \begin{align*}
 J &= \left\lceil \frac{T}{A} \right\rceil \\
 where\ A & =\left\lceil \frac{log T}{N \underline{r}} \right\rceil
 \end{align*}
+With some adaptations, for instance $I_t$ should be the same for $A$ real rounds and we make sure none of the $O_{t,I_t}$ are counted in the new computation of $M_j$ - where $A(j-1)<t\leq Aj$ which are the grouped steps - and leads less biased estimations of $\hat{l_{j,i}}$.
 
 \section{Exp3 on Stochastic Block-Model Graphs}
 
-\paragraph{}We consider a multi-armed bandit where the arms are divided up in several classes. Every time the learner chooses an arm, not only does he observes the loss of this arm, but he can also have informations about losses of non-chosen arms. We model observation graphs by stochastic block models. We consider that when the learner choose a arm of the class $i$, the other arms of the class $i$ have the probability $r_{ii}$ to reveal their loss and the other arms of a class $j$ have the probability $r_{ij}$. The problem is characterized by the matrix $R$ which represents the probabilities of communication between two arms of differents classes.
+\paragraph{}We consider a multi-armed bandit where the arms are divided up in several classes. Every time the learner chooses an arm, not only does he observes the loss of this arm, but he can also have information about losses of non-chosen arms. We model observation graphs by stochastic block models. We consider that when the learner choose a arm of the class $i$, the other arms of the class $i$ have the probability $r_{ii}$ to reveal their loss and the other arms of a class $j$ have the probability $r_{ij}$. The problem is characterized by the matrix $R$ which represents the probabilities of communication between two arms of different classes. In this problem, we assume that the classification of the arm as already been done, so we know the class of each arm and we define $N_i$, the size of the cluster $i$.
 
 \subsection{Problem definition}
 
@@ -141,7 +142,7 @@ As in Sec. 1, everything happens as if, at every time step $t$, we built a stoch
 	\end{subfigure}
 	\begin{subfigure}{.49\textwidth}
 		\includegraphics[width=\textwidth]{assortative}
-		\caption{Assortative communitites}
+		\caption{Assortative communities}
 	\end{subfigure}
 	\caption{Stochastic block model random graph (from \cite{sbm})}
 	\label{fig:sbm}
@@ -159,7 +160,19 @@ Keeping with the original algorithm, we thus want to build an estimator $G_{i,t}
 \begin{align*}
 \hat{l_{t,i}}=G_{t,i}O_{t,i}l_{t,i}
 \end{align*}
-we obtain the desired unbiased estimator. The whole difficulty thus rely on the sampling of $M_t$ so that it stays independant of $O_t$.
+we obtain the desired unbiased estimator. The whole difficulty thus rely on the sampling of $M_t$ so that it stays independent of $O_t$.
 
 \paragraph{$M_t$ sampling}
+
+
+\subsection{Adaptation of Estimate r, generalized algorithm}
+\paragraph{}We now want to provide lower-bounds for every $r_{ij}$ so we know if at a step $t$, after choosing $I_t$ if we need to group so steps to have unbiased loss estimates. This could be done considering $\underline{r}_N^{*}=\min_{j,\ \underline{r}_{i,j}>0}\ \underline{r}_{i,j}\:N_j$ and then using to group the next rounds $A^{*} =\left\lceil \frac{log T}{\underline{r}_N^{}*} \right\rceil$, but would make depend $A^{*}$ of $I_t$ and so might change the number of steps we group at each round. To have a general $A$ which would not depend of $I_j$ we chose at round $j$ we consider :
+\begin{align*}
+\underline{r}_N^* &= \min_{i,j,\ \underline{r}_{i,j}>0} \underline{r}_{i,j}\:N_j\\
+A &= \left\lceil \frac{log T}{\underline{r}_N^{*}} \right\rceil
+\end{align*}
+Then we can group $A$ steps for each rounds and apply the previously described algorithm.
+
+\paragraph{If $\underline{R}=0$ : \\}
+Then we 
 \end{document}
