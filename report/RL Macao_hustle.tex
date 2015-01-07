@@ -74,7 +74,7 @@ For all $i=1,...,N-1$, we define $O_{t,i}^{'}$ as:
 \forall i<I_{t}\ O_{t,i}^{'}=O_{t,i} \qquad \forall N\geq i>I_{t}\ O_{t,i-1}^{'}=O_{t,i} \\
 M_t^* =\min\{1\leq i<N: O_{t-1,i}^{'} =1\}\cup\{N\}
 \end{align*}
-We also define $K_{t,i}$ as a geometric random variable with parameter $p_{t,i}$ computed a the step $t-2$. The since $M_t$ depends of $O_{t-1}$ and $p_{t,i}$ of $O_{t-2}$ they are obviously independant. That's why we can consider :
+We also define $K_{t,i}$ as a geometric random variable with parameter $p_{t,i}$ computed a the step $t-2$. The since $M_t$ depends of $O_{t-1}$ and $p_{t,i}$ of $\left(O_k\right)_{k\leq t-2}$ they are obviously independant. That's why we can consider :
 \begin{align*}
 	G_{t,i}=\min\left(K_{t,i},M_t\right)
 \end{align*}
@@ -95,16 +95,35 @@ which is ununbiased estimator of $l_{t,i}$, as independance allows us to separat
 R_T \leq 4 \sqrt{\left(\frac{T}{r}+N^2\right)\log N}+\sqrt{T}
 \]
 \subsection{Lower-bounding $r$}
-However, a problem remains in this algorithm ; since we don't know a priori what is the value of r, we can't ensure that $ r\geq \frac{log(T)}{2N}$ as we did the assumption previously. So we need to find a lower bound on $r$ to know in which case we probably are. The algorithm $Estimating\ \underline{r}$ returns the argument $\underline{r}$ with the following properties : 
-\[
-\mathbb{P} [\underline{r}\leq r]\geq 1-\frac{1}{\sqrt{T}}
-\]
-\[
-if\ r\leq \frac{1}{N}\ \mathbb{P} [\underline{r}=0]=1-\frac{1}{\sqrt{T}} 
-\]
-\[
-if\ r\geq \frac{2}{N}\ \mathbb{P} [\underline{r}=0]\leq \frac{1}{\sqrt{T}} 
-\]
+However, a problem remains in this algorithm ; since we don't know a priori what is the value of r, we can't ensure that $ r\geq \frac{log(T)}{2N}$ as did the assumption previously. So we need to find a lower bound on $r$ to know in which case we probably are. The algorithm \verb|Estimate |$\underline{r}$ returns the argument $\underline{r}$ with the following properties : 
+\begin{align*}
+\mathbb{P} [\underline{r}\leq r]&\geq 1-\frac{1}{\sqrt{T}}\\
+\mathbb{P} [\underline{r}=0]&=1-\frac{1}{\sqrt{T}},\ \ if\ r\leq \frac{1}{N}\\
+\mathbb{P} [\underline{r}=0]&\leq \frac{1}{\sqrt{T}},\ \ if\ r\geq \frac{2}{N}
+\end{align*}
+Furthermore, let $\tau$ be the index of the round when \verb|Estimate |$\underline{r}$ terminates, then we have :
+\begin{align*}
+\expect{[\tau]} & = \frac{4\ log\ T}{N}+\sqrt{T}+1,\ if\ r \leq \frac{1}{N}\\
+\expect{[\tau]} & = log\ T \left( \frac{4}{N} + \frac{e}{2} \right) + 2,\ if\ r\geq \frac{2}{N}\\
+\expect{[\tau]} & = log\ T \left( \frac{4}{N} + e \right) + 2,\ if\ r \in [1/N,2/N]
+\end{align*}
+
+These properties will allow us to run this algorithm in first before running a learning algorithm without increasing too much the expected regret. In this configuration, then we can safely estimate that if :
+$$ \underline{r} \geq \frac{log\ T}{N} $$
+Then we can consider that r is probably large enough to run the previously algorithm \textsc{DuplExp3} on the graph. We will now see how we should proceed in the other cases.
+
+\subsection{Generalized algorithm}
+\paragraph{}We now are able to generate a safe lower bound of $r$, $\underline{r}$. This is the first step of the algorithm. We already explained that we could resume to \textsc{DuplExp3} at the current step $\tau$ if we had $ \underline{r} \geq \frac{log\ T}{N}$. We now explain what are the solutions in the other cases.\\
+
+\paragraph{} If $\underline{r}=0$ : \\
+We consider that $r$ is really equal to $0$ and run vanilla \textsc{Exp3} with parameter $\eta=\sqrt{\left(2\ log\ N \right)/\left(TN\right)}$ from the step $\tau$.
+
+\paragraph{}If $0< \underline{r} < \frac{log\ T}{N}$ :
+Then $r$ might be too small so we can have have side information and so have a biased estimation $r$ during the steps. In this case, we use a simple trick to reattach to the case of \textsc{DuplExp3} : The new algorithm groups multiple steps together so that it was as if the number of episodes became,
+\begin{align*}
+J &= \left\lceil \frac{T}{A} \right\rceil \\
+where\ A & =\left\lceil \frac{log T}{N \underline{r}} \right\rceil
+\end{align*}
 
 \section{Exp3 on Stochastic Block-Model Graphs}
 
