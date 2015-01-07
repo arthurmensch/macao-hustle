@@ -134,13 +134,18 @@ class DuplexpPlayer(Player):
 
 	def play(self,observe,loss):
 		if self.estimate_phase :
-			r,I,s=self.estimate_r(observe,loss)
+			rbar,I,s=self.estimate_r(observe,loss)
 			for k in range(0,s):
 				self.I[self.t+k]=I[k]
 				self.regret += loss[self.t+k,I[k]] - loss[self.t+k,:]
 				self.max_regret[self.t+k] = np.max(self.regret)
 			self.t+=s
 			self.tstart = self.t
+			self.rbar = rbar
+			#print(rbar)
+			rstar = min([self.rbar[i,j]*self.graph.cluster_size[j] if self.rbar[i,j] > 0 else self.N for i,j in zip(range(0,self.graph.num_cluster),range(0,self.graph.num_cluster))])
+			self.A = int(np.ceil(np.log(self.T))/rstar)
+			print(self.A)
 			self.estimate_phase=False
 		else :
 			super(DuplexpPlayer,self).play(observe,loss)
@@ -148,38 +153,47 @@ class DuplexpPlayer(Player):
 	def choose_arm(self,observe,loss):
 		t = self.t
 		if (self.t - self.tstart) % self.A == 0:
+			self.episode += 1
 			e = self.episode % 2
-			self.Lhat[self.episode,:] = self.Lhat[self.episode-2,:]+self.DLhat[self.episode,:]
 			eta = np.sqrt(np.log(self.N)/((self.N*self.N)
 						  + np.sum(np.multiply(np.multiply(self.p[e:self.episode:2,:],self.DLhat[e:self.episode:2,:]),self.DLhat[e:self.episode:2,:]))))
 			w = -eta*self.Lhat[self.episode-2,:]
 			w = w - np.max(w)
+			#print(w[0:100])
 			w = np.exp(w)
+			if np.sum(w) == 0:
+				raise ValueError
 			self.p[t,:] = w/np.sum(w)
-			self.episode += 1
+			if any(np.isnan(self.p[t,:])):
+				raise ValueError
 			self.last_t[e,:] = self.last_t_immediate[e,:].copy()
 		else: #no p update
 			e = self.episode % 2
 			self.p[t,:] = self.p[t-1,:]
 		I = np.random.choice(int(self.N),p=self.p[t,:])
 		self.O[t,:] = observe(I)
-		c = self.graph.find_cluster(I)
+		cI = self.graph.find_cluster(I)
 		M = np.zeros(self.graph.num_cluster)
 		for k in range(0,self.graph.num_cluster):
-			Oc = self.O[self.last_t[e,c],self.graph.C[k]]
-			if k == c:
-				I_last = self.I[self.last_t[e,c]]
+			Oc = self.O[self.last_t[e,cI],self.graph.C[k]]
+			if k == cI:
+				I_last = self.I[self.last_t[e,cI]]
 				Oc = np.delete(Oc,I_last-self.graph.cluster_bounds[self.graph.find_cluster(I_last)])
 			min_i = np.nonzero(Oc)[0]
 			M[k] = min_i[0] if np.size(min_i) > 0 else self.graph.cluster_size[k]-1
-		self.last_t_immediate[e,c] = t
+		self.last_t_immediate[e,cI] = t
 		G = np.zeros(self.N)
 		for i in range(0,self.N):
-			c= self.graph.find_cluster(i)
-			K = max(0,np.random.geometric(self.p[t,i]))
-			G[i] = min(M[c],K)
+			ci= self.graph.find_cluster(i)
+			if self.rbar[cI,ci] != 0:
+				K = max(0,np.random.geometric(self.p[t,i]))
+				G[i] = min(M[ci],K)
+			else:
+				G[i] = 1 / self.p[t,I]
 		lhat = np.multiply(np.multiply(loss,self.O[t,:]),G)
 		self.DLhat[self.episode,:] += lhat
+		if (self.t + 1 - self.tstart) % self.A == 0:
+			self.Lhat[self.episode,:] = self.Lhat[self.episode-2,:]+self.DLhat[self.episode,:]
 		return I
 
 	def estimate_r(self,observe,loss):
@@ -270,11 +284,11 @@ class DuplexpPlayerErdos(DuplexpPlayer):
 		self.graph = Graph([sum(self.graph.cluster_size)],[1])
 
 def test():
-	T = 1000
+	T = 3000
 	num = 1
-	graph = Graph([100,100,100],np.array([[0.1,0.5,0],[0.05,0.2,0.5],[0.5,0.5,0.05]]))
+	graph = Graph([100,100,100],np.array([[0.1,0.5,0],[0.05,0.2,0.5],[0.1,0.5,0.05]])/10)
 	#graph = Graph([600],np.array([[0.2]]))
-	players_type = [DuplexpPlayer]
+	players_type = [DuplexpPlayer,DuplexpPlayerErdos]
 	game = Game(graph,T,players_type,num)
 	game.run()
 	game.display()
