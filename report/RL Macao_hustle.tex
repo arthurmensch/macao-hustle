@@ -49,8 +49,8 @@ $\left(O_t\right)_{_i\in\left[N\right]}$ corresponds to the value of the logic e
 \item For all $i$ such that $O_{t,i}=1$ the player can observe the loss $l_{t,i}$.
 \end{enumerate}
  
-We write $p_{t,i}=\mathbb{P}[I_t=i|\mathcal{F}_{t-1}]$ where $\mathcal{F}_{t-1}$ corresponds to all the actions and observations the player had until the step t. Then intuitively the probability of observing the loss of the arm $i$ at the step $t$ would be $q_{t,i}=p_{t,i} + (1-p_{t,i})r$ and to use the \textsc{Exp3}$3$
-the the loss estimate :
+We write $p_{t,i}=\mathbb{P}[I_t=i|\mathcal{F}_{t-1}]$ where $\mathcal{F}_{t-1}$ corresponds to all the actions and observations the player had until the step t. Then intuitively the probability of observing the loss of the arm $i$ at the step $t$ would be $q_{t,i}=p_{t,i} + (1-p_{t,i})r$ and to use the \textsc{Exp3}.
+Then the loss estimate would be :
 \[
 \hat{l}_{t,i}=\frac{O_{t,i}l_{t,i}}{q_{t,i}}.
 \]
@@ -127,7 +127,7 @@ Then $r$ might be too small so we can have have side information and so have a b
 J &= \left\lceil \frac{T}{A} \right\rceil \\
 \text{where }A & =\left\lceil \frac{\log T}{N \underline{r}} \right\rceil
 \end{align*}
-With some adaptations, for instance $I_t$ should be the same for $A$ real rounds and we make sure none of the $O_{t,I_t}$ are counted in the new computation of $M_j$ - where $A(j-1)<t\leq Aj$ which are the grouped steps - and leads less biased estimations of $\hat{l}_{j,i}$.
+With some adaptations, for instance $I_t$ should be the same for $A$ real rounds and we make sure none of the $O_{t,I_t}$ are counted in the new computation of $M_j$ - where $A(j-1)<t\leq Aj$ which are the grouped steps - and leads more accurate estimations of $\hat{l}_{j,i}$.
 
 \section{Exp3 on Stochastic Block-Model Graphs}
 
@@ -157,7 +157,7 @@ Notations and definition are mostly the same as in Sec. 1, and will be introduce
 
 \subsection{Algorithm}
 
-\paragraph{}\cite{valko} algorithm aims at computing an unbiased estimator for each $(l_{i,t}$, in order to yield satisfying upper bounds on maximum expected regret. We follow the same principle, making use of arms' cluster labels. If we had access to every values $r_{ij}$, we would be able to define, choosing arm $I_t$ at round $t$ :
+\paragraph{}\cite{valko} algorithm aims at computing an unbiased estimator for each $l_{i,t}$, in order to yield satisfying upper bounds on maximum expected regret. We follow the same principle, making use of arms' cluster labels. If we had access to every values $r_{ij}$, we would be able to define, choosing arm $I_t$ at round $t$ :
 \begin{align*}
 \hat{l}_{t,i}^{*} = \frac{O_{t,i}l_{t,i}}{p_{t,i}+(1-p_{t,i})r_{C(I_t),C(i)}}
 \end{align*}
@@ -168,10 +168,10 @@ Keeping with the original algorithm, we thus want to build an estimator $G_{i,t}
 \end{align*}
 we obtain the desired unbiased estimator. The whole difficulty thus rely on the sampling of $M_t$ so that it stays independent of $O_t$.
 
-\paragraph{$M_t$ sampling}In orer to sample $M_t$, we crucially runs two \textit{Exp3} algorithm on even and odd time-step,
+\paragraph{$M_t$ sampling :}In order to sample $M_t$, we crucially runs two \textit{Exp3} algorithm on even and odd time-step,
  in order to draw $p_{t,i}$ from history from all $t' < t$ of the same parity as t,
   and $M_t$ from $O_{t'+1}$, i.e from observation of other parity algorithm.
-  We thus ensure independance of $M_t$ and $O_t$, as $(O_o)_{o \equiv t [2]}$ and $(O_e)_{o \equiv t+1 [2]}$ are independant (output of two parallel algorithms). To draw a geometric distribution of parameter $r_{C(I_t),C(i)}$, we simply find the last $O_{t'}$, with $t' \equiv t -1 [2]$ in which the observed $I(t')$ was in the same cluster as $I(t)$ and average the distance between two observation within cluster $C(j)$.
+  We thus ensure independence of $M_t$ and $O_t$, as $(O_o)_{o \equiv t [2]}$ and $(O_e)_{o \equiv t+1 [2]}$ are independent (output of two parallel algorithms). To draw a geometric distribution of parameter $r_{C(I_t),C(i)}$, we simply find the last $O_{t'}$, with $t' \equiv t -1 [2]$ in which the observed $I(t')$ was in the same cluster as $I(t)$ and average the distance between two observation within cluster $C(j)$.
 
 
 \subsection{Lower-bounding $r_{i,j}$}
