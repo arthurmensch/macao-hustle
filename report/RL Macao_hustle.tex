@@ -3,12 +3,13 @@
 \usepackage{amsmath}
 \usepackage{amsfonts}
 \usepackage{amssymb}
+\usepackage{hyperref}
 \usepackage{graphicx}
 \usepackage{subcaption}
 \graphicspath{ {./figures/} }
 \usepackage{lmodern}
 \usepackage{array}
-\usepackage[left=3cm,right=3cm,top=2cm,bottom=2cm]{geometry}
+\usepackage[left=3cm,right=3cm,top=2.2cm,bottom=2.2cm]{geometry}
 \title{Bandits on stochastic block-model graphs}
 \author{Arthur Mensch, Michaël Weiss}
 
@@ -24,15 +25,15 @@
 \section{Introduction}
 \paragraph{}We consider an adversarial multi-arm bandit problem with \textit{side information}. Such a problem, located between \textit{full-information} problem (at each round, the player observe the loss of every arm), and the \textit{bandit problem} (at each round, the player observe only the loss for the arm he choose). It can model several real-life situations, an important one being preference observation on social networks : feeding a user with a given content, we can observe its feedback (\textit{retweet} on Twitter, \textit{like} on Facebook), along with the feedback of some of his friends virally fed with the same content.
 
-The \textit{bandit} problem can be addressed most efficiently using the well-know \verb|Exp3| algorithm, described in \cite{exp3}. Very recently, \cite{valko} has proposed to extend this algorithm to the \textit{side-information problem}, where feedback distribution is modeled using Erdos-Renyi random graphs. Most importantly, this article focuses on ways to estimate loss distribution over arms, not knowing the underlying edge-revelation probability. It draws upper-bounds on maximum expected regret, using methods inspired from geometrical resampling, present in \cite{neu}.
+The \textit{bandit} problem can be addressed most efficiently using the well-know \textsc{Exp3} algorithm, described in \cite{exp3}. Very recently, \cite{valko} has proposed to extend this algorithm to the \textit{side-information problem}, where feedback distribution is modeled using Erdos-Renyi random graphs. Most importantly, this article focuses on ways to estimate loss distribution over arms, not knowing the underlying edge-revelation probability. It draws upper-bounds on maximum expected regret, using methods inspired from geometrical resampling, present in \cite{neu}.
 
-Erdos-Renyi graph are too simple to successfully model social networks, as population clusters leads to non-uniform connection probabilities. More complex models has been proposed for this purpose, including stochastic block models, which extends Erdos-Renyi to graphs with different clusters. We propose an algorithm that extends \verb|DuplExp3| from \cite{valko} to stochastic block models, where bandit cluster label is known. We empirically show that our algorithm outperform \cite{valko} algorithm on any stochastic blockmodel graph with more than $2$ clusters. 
+Erdos-Renyi graph are too simple to successfully model social networks, as population clusters leads to non-uniform connection probabilities. More complex models has been proposed for this purpose, including stochastic block models (SBM), which extends Erdos-Renyi to graphs with different clusters. We propose an algorithm that extends \textsc{DuplExp3} from \cite{valko} to stochastic block models, where bandit cluster label is known. We empirically show that our algorithm outperform \cite{valko} algorithm on any stochastic blockmodel graph with more than $2$ clusters. 
 
-\section{Exp3 on Erdös-Rényi Graph}
+\section{\textsc{Exp3} on Erdös-Rényi Graph}
 
 \paragraph{}We first recall \cite{valko} settings, and describe the algorithm adapted to Erdös-Renyi graphs, and its underlying principles. The problem is reduced to the situation where all non-chosen arms reveal their loss with unknown probability $r_{11}=r$. This can be modeled by Erdös-Rényi random graphs with parameter $r$: at each step $t$, for all $(i,j)$ node pairs, we construct an edge between $i$ and $j$ with the probability $r$; we observe loss from the neighbors of chosen arm $I_t$.
 
-Erdös-Rényi graph models interaction between a fully-connected group of people, where content is shared with probability $r$. Although it seems very simple, it already requires subtle adaptation of vanilla \verb|Exp3| algorithm for the player to benefit from side-observation.
+Erdös-Rényi graph models interaction between a fully-connected group of people, where content is shared with probability $r$. Although it seems very simple, it already requires subtle adaptation of vanilla \textsc{Exp3} algorithm for the player to benefit from side-observation.
 
 \subsection{Problem Definition}
 We consider a sequential set on interactions with the multi-armed bandit we assume to have $N$ arms, for each step $t=1,..,T$ these are the actions performed by the environment : 
@@ -48,7 +49,7 @@ $\left(O_t\right)_{_i\in\left[N\right]}$ corresponds to the value of the logic e
 \item For all $i$ such that $O_{t,i}=1$ the player can observe the loss $l_{t,i}$.
 \end{enumerate}
  
-We write $p_{t,i}=\mathbb{P}[I_t=i|\mathcal{F}_{t-1}]$ where $\mathcal{F}_{t-1}$ corresponds to all the actions and observations the player had until the step t. Then intuitively the probability of observing the loss of the arm $i$ at the step $t$ would be $q_{t,i}=p_{t,i} + (1-p_{t,i})r$ and to use the \textsc{Exp}$3$
+We write $p_{t,i}=\mathbb{P}[I_t=i|\mathcal{F}_{t-1}]$ where $\mathcal{F}_{t-1}$ corresponds to all the actions and observations the player had until the step t. Then intuitively the probability of observing the loss of the arm $i$ at the step $t$ would be $q_{t,i}=p_{t,i} + (1-p_{t,i})r$ and to use the \textsc{Exp3}$3$
 the the loss estimate :
 \[
 \hat{l}_{t,i}=\frac{O_{t,i}l_{t,i}}{q_{t,i}}.
@@ -59,13 +60,13 @@ But the main problem resides in the fact that $r$ is unknown so the algorithms p
 \]
 The principal idea is to have access to two \textbf{independent} geometrically distributed random variables $M_t^*$ and $K_{t,i}$ with respective parameters $r$ and $p_{t,i}$, then the variable $G_{t,i}^*=\min\{K_{t,i},M_t^*\}$ is also geometrically distributed with the parameter $q_{t,i}$ previously defined. Then if we have $G_{t,i}^*$ \textbf{independent} of $O_{t,i}$ we can replace in the definition of $\hat{l}_{t,i}$, $\frac{1}{q_{t,i}}$ by $G_{t,i}^*$.
 
-\subsection{DuplExp3 for large values of r}
-\paragraph{}We assume $ r\geq \frac{log(T)}{2N}$, which implies that the probability of having no additional observations in round t is bounded by $\frac{1}{\sqrt{T}}$.\newline
+\subsection{\textsc{DuplExp3} for large values of r}
+\paragraph{}We assume $ r\geq \frac{\log(T)}{2N}$, which implies that the probability of having no additional observations in round t is bounded by $\frac{1}{\sqrt{T}}$.\newline
 This algorithm needs two \textsc{Exp3} sub-algorithms, with learning rates $\left(\eta_t\right)$. one for the round when t is even and the other one for the rest so that we can construct independent $M_t^*$ and $K_{t,i}$ and independent $G_{t,i}^*$ and $O_{t,i}$.
 For each $t$, the algorithm draws:
-\[
-p_{t+2,i}\propto w_{t+2,i}= \frac{1}{N} exp\left( -\eta_{t+2} \hat{L}_{t,i} \right)
-\]
+\begin{align*}
+p_{t+2,i}\propto w_{t+2,i}= \frac{1}{N} \exp\left( -\eta_{t+2} \hat{L}_{t,i} \right)
+\end{align*}
 Where $\hat{L}_{t,i}=\sum_{k=0}^{t/2} \hat{l}_{t-2k,i}$ the cumulative sum of the loss estimates for the arm $i$ for one of the \textsc{Exp3} sub-algorithms.
 
 $M_t^*$, truncated geometrical variable of parameters $r$ is constructed as such : 
@@ -91,26 +92,28 @@ which, taking the expectation, yields:
 &= \expect{l_{t,i}}
 \end{align*}
 which is unbiased estimator of $l_{t,i}$, as independence allows us to separate expectation. Setting $\eta_t = $, the following upper-bound on the regret can be drawn, using unbiased estimator $\hat l$:
-\[
+\begin{align*}
 R_T \leq 4 \sqrt{\left(\frac{T}{r}+N^2\right)\log N}+\sqrt{T}
-\]
-\subsection{Lower-bounding $r$}
-However, a problem remains in this algorithm ; since we don't know a priori what is the value of r, we can't ensure that $ r\geq \frac{log(T)}{2N}$ as did the assumption previously. So we need to find a lower bound on $r$ to know in which case we probably are. The algorithm \verb|Estimate |$\underline{r}$ returns the argument $\underline{r}$ with the following properties : 
+\end{align*}
+\subsection{Lower-bounding r}
+However, a problem remains in this algorithm ; since we don't know a priori what is the value of r, we can't ensure that $ r\geq \frac{\log(T)}{2N}$ as did the assumption previously. So we need to find a lower bound on $r$ to know in which case we probably are. The algorithm \textsc{Estimate\_r} returns the argument $\underline{r}$ with the following properties : 
 \begin{align*}
 \mathbb{P} [\underline{r}\leq r]&\geq 1-\frac{1}{\sqrt{T}}\\
 \mathbb{P} [\underline{r}=0]&=1-\frac{1}{\sqrt{T}},\ \ if\ r\leq \frac{1}{N}\\
 \mathbb{P} [\underline{r}=0]&\leq \frac{1}{\sqrt{T}},\ \ if\ r\geq \frac{2}{N}
 \end{align*}
-Furthermore, let $\tau$ be the index of the round when \verb|Estimate |$\underline{r}$ terminates, then we have :
+Furthermore, let $\tau$ be the index of the round when \textsc{Estimate\_r} $\underline{r}$ terminates, then we have :
 \begin{align*}
 \expect{[\tau]} & = \frac{4\ log\ T}{N}+\sqrt{T}+1,\ if\ r \leq \frac{1}{N}\\
 \expect{[\tau]} & = log\ T \left( \frac{4}{N} + \frac{e}{2} \right) + 2,\ if\ r\geq \frac{2}{N}\\
 \expect{[\tau]} & = log\ T \left( \frac{4}{N} + e \right) + 2,\ if\ r \in [1/N,2/N]
 \end{align*}
 
-These properties will allow us to run this algorithm in first before running a learning algorithm without increasing too much the expected regret. In this configuration, then we can safely estimate that if :
-$$ \underline{r} \geq \frac{log\ T}{N} $$
-Then we can consider that r is probably large enough to run the previously algorithm \textsc{DuplExp3} on the graph. We will now see how we should proceed in the other cases.
+These properties will allow us to run this algorithm in first before running a learning algorithm without increasing too much the expected regret. In this configuration, then we can decide with low probability error if :
+\begin{align*}
+\underline{r} \geq \frac{\log\ T}{N}
+\end{align*}
+We then consider that r is large enough to run the previously algorithm \textsc{DuplExp3} on the graph. We will now see how we should proceed in the other cases.
 
 \subsection{Generalized algorithm}
 \paragraph{}We now are able to generate a safe lower bound of $r$, $\underline{r}$. This is the first step of the algorithm. We already explained that we could resume to \textsc{DuplExp3} at the current step $\tau$ if we had $ \underline{r} \geq \frac{log\ T}{N}$. We now explain what are the solutions in the other cases.\\
@@ -122,7 +125,7 @@ We consider that $r$ is really equal to $0$ and run vanilla \textsc{Exp3} with p
 Then $r$ might be too small so we can have have side information and so have a biased estimation $r$ during the steps. In this case, we use a simple trick to reattach to the case of \textsc{DuplExp3} : The new algorithm groups multiple steps together so that it was as if the number of episodes became,
 \begin{align*}
 J &= \left\lceil \frac{T}{A} \right\rceil \\
-where\ A & =\left\lceil \frac{log T}{N \underline{r}} \right\rceil
+\text{where }A & =\left\lceil \frac{\log T}{N \underline{r}} \right\rceil
 \end{align*}
 With some adaptations, for instance $I_t$ should be the same for $A$ real rounds and we make sure none of the $O_{t,I_t}$ are counted in the new computation of $M_j$ - where $A(j-1)<t\leq Aj$ which are the grouped steps - and leads less biased estimations of $\hat{l}_{j,i}$.
 
@@ -144,9 +147,11 @@ As in Sec. 1, everything happens as if, at every time step $t$, we built a stoch
 		\includegraphics[width=\textwidth]{assortative}
 		\caption{Assortative communities}
 	\end{subfigure}
-	\caption{Stochastic block model random graph (from \cite{sbm})}
+	\caption{Stochastic block model random graph\protect\footnotemark}
 	\label{fig:sbm}
 \end{figure}
+
+\footnotetext{\url{http://tuvalu.santafe.edu/~aaronc/courses/5352/fall2013/csci5352_2013_L16.pdf}}
 
 Notations and definition are mostly the same as in Sec. 1, and will be introduced as we adapt \cite{valko} algorithm. 
 
@@ -154,38 +159,103 @@ Notations and definition are mostly the same as in Sec. 1, and will be introduce
 
 \paragraph{}\cite{valko} algorithm aims at computing an unbiased estimator for each $(l_{i,t}$, in order to yield satisfying upper bounds on maximum expected regret. We follow the same principle, making use of arms' cluster labels. If we had access to every values $r_{ij}$, we would be able to define, choosing arm $I_t$ at round $t$ :
 \begin{align*}
-\hat{l}_{t,i}^{*} = \frac{O_{t,i}l_{t,i}}{p_{t,i}+(1-p_{t,i})r_{I_t,i}}
+\hat{l}_{t,i}^{*} = \frac{O_{t,i}l_{t,i}}{p_{t,i}+(1-p_{t,i})r_{C(I_t),C(i)}}
 \end{align*}
-Keeping with the original algorithm, we thus want to build an estimator $G_{i,t}$ that follows a geometrical law of parameter $p_{t,i}+(1-p_{t,i})r_{I_t,i}$. We will rely on the sampling of a geometric variable $M_t$ of parameter $r_{I_t,i}$, making sure that it stays independent from $O_{t,i}$. That way, setting
+where operator C output the cluster number of an index.
+Keeping with the original algorithm, we thus want to build an estimator $G_{i,t}$ that follows a geometrical law of parameter $p_{t,i}+(1-p_{t,i})r_{I_t,i}$. We will rely on the sampling of a geometric variable $M_t$ of parameter $r_{C(I_t),C(i)}$, making sure that it stays independent from $O_{t,i}$. That way, setting
 \begin{align*}
 \hat{l}_{t,i}=G_{t,i}O_{t,i}l_{t,i}
 \end{align*}
 we obtain the desired unbiased estimator. The whole difficulty thus rely on the sampling of $M_t$ so that it stays independent of $O_t$.
 
-\paragraph{$M_t$ sampling}
+\paragraph{$M_t$ sampling}In orer to sample $M_t$, we crucially runs two \textit{Exp3} algorithm on even and odd time-step,
+ in order to draw $p_{t,i}$ from history from all $t' < t$ of the same parity as t,
+  and $M_t$ from $O_{t'+1}$, i.e from observation of other parity algorithm.
+  We thus ensure independance of $M_t$ and $O_t$, as $(O_o)_{o \equiv t [2]}$ and $(O_e)_{o \equiv t+1 [2]}$ are independant (output of two parallel algorithms). To draw a geometric distribution of parameter $r_{C(I_t),C(i)}$, we simply find the last $O_{t'}$, with $t' \equiv t -1 [2]$ in which the observed $I(t')$ was in the same cluster as $I(t)$ and average the distance between two observation within cluster $C(j)$.
 
 
-\subsection{Adaptation of Estimate r, generalized algorithm}
-\paragraph{}We now want to provide lower-bounds for every $r_{ij}$ so we adapt the previous algorithm for every $r_{ij}$, we compute $C_i$ which depends of $N_i$ the same way $C$ depended of $N$ in \cite{valko} for the algorithm \verb|estimate r|. For the following explanations, we consider variables $x_{ij}$ which are computed when we draw $I_t$ with uniform probability in the cluster $i$ and look at the results in the cluster $j$, i.e. we look at the $O_{t,k}$ where $k$ is in the cluster $j$.\\
-Then for each cluster $i$ we compute $c_{ij}$ associated for each $j=1,...,n$ allowing to safely estimate between $0$ and $\max_i (C_i)$ if $\underline{r}_{ij}=0\ \forall j=1,...,n$. So this step costs $k* \max_i (C_i)$ iterations. \\
-The second step needs also to estimate $\underline{r}_{ij}$ if it had not been estimated as equal to $0$ during the first step. We also perform it linearly for each cluster $i$ where we compute $m_{ij}$ and $M_{ij}[m_{ij}],\ m=1,..,k, j=1,..,k$ in parallel, the equivalents of $j$ and $M[j]$ in \cite{valko}.\\
-Finally when all end conditions are met we return $\underline{R}$. What is interesting about the algorithm is that it provides $\underline{R}$ such that :
-$$ \expect{\tau} \leq O \left( k\:\sqrt{T} \right)\ if\ \forall i=1,...,n\  ,\ \exists j\in {1,...,N}\ and\ r_{ij}<\frac{1}{N_j}  $$
-in the worst case scenario. Besides we have the probabilities :
+\subsection{Lower-bounding $r_{i,j}$}
+\paragraph{}We now want to provide lower-bounds for every $r_{ij}$ to adapt the previous algorithm. For every $r_{ij}$, we compute $C_i$ which depends of $N_i$ the same way $C$ depended of $N$ in \cite{valko} in the algorithm \textsc{estimate\_r}. For the following explanations, we consider variables $x_{ij}$ which are computed when we draw $I_t$ with uniform probability in the cluster $i$ and look at the results in the cluster $j$, i.e. we look at the $O_{t,k}$ where $k$ is in the cluster $j$.
+
+For each cluster $i$ we compute $c_{ij}$ associated for each $j=1,...,n$ allowing us to safely estimate in time $t \in \left[0,\max_j (C_j)\right]$ if $\underbar{r}_{ij}=0\ \forall j=1,...,n$. We repeat this step for all $i$, which ensures that $t \in \left[0,n \max_j\left(C_j\right)\right]$
+\paragraph{}The second step needs also to estimate $\underbar{r}_{ij}$ first step has not concluded $r_{ij} = 0$. We also perform it for each cluster $i$ where we compute $m_{ij}$ and $M_{ij}[m_{ij}],\ m=1,..,k, j=1,..,k$ in parallel, the equivalents of $j$ and $M[j]$ in \cite{valko}.\\
+Finally when all end conditions are met we return $\underline{R}$. Adapating \cite{valko}, we should be able to prove that the algorithm provides $\underbar{R}$ in time $\tau$ such that :
+\begin{align*}
+\expect\left({\tau}\right) &\leq \sum_{i,j \in [N]^2} \frac{4\log T}{N_i} \mathbf{1}_{r_{ij} > \frac{1}{N_j}} + \sqrt{T} \mathbf{1}_{r_{ij} < \frac{1}{N_j}}+ \mathrm{Cste}
+\end{align*}
+with the probabilities:
 \begin{align*}
 \mathbb{P} [\underline{r}_{ij} \leq r_{ij}]&\geq 1-\frac{1}{\sqrt{T}}\\
 \mathbb{P} [\underline{r}_{ij}=0]&=1-\frac{1}{\sqrt{T}},\ \ if\ r_{ij}\leq \frac{1}{N_j}\\
 \mathbb{P} [\underline{r}_{ij}=0]&\leq \frac{1}{\sqrt{T}},\ \ if\ r_{ij}\geq \frac{2}{N_{ij}}
 \end{align*}
-So these lower bounds are still pretty safely estimated. 
-
-\paragraph{}After computing $\underline{R}$, we can know if at a step $t$, after choosing $I_t$ if we need to group so steps to have unbiased loss estimates. This could be done considering $\underline{r}_N^{*}=\min_{j,\ \underline{r}_{i,j}>0}\ \underline{r}_{i,j}\:N_j$ and then using to group the next rounds $A^{*} =\left\lceil \frac{\log T}{\underline{r}_N^{}*} \right\rceil$, but would make depend $A^{*}$ of $I_t$ and so might change the number of steps we group at each round. To have a general $A$ which would not depend of $I_j$ we chose at round $j$ we consider :
+We thus obtain safe lower-bounds in reasonable time (if the number of cluster is kept reasonable).
+\paragraph{}Computation of $\underline{R}$ allows us to compute the episode size $A^{*}$ that we need in our algoirthm to yield unbiased estimates and allow proof of upper bounds. This can be done considering, at each time step $t$, $\underline{r}_{N}^{*}(t)=\min_{j,\ \underline{r}_{I(t),j}>0}\ \underline{r}_{I(t),j}\:N_j$ and then using $A^{*}(t) =\left\lceil \frac{\log T}{\underline{r}_N^{*}} \right\rceil$ to group the next round, but would make depend $A^{*}$ of $I_t$. However, it forces us to update the number of steps we group at each episode, complicating the implementation. To obtain a general $A$ which would not depend of $I_j$ we chose at round $j$ we consider :
 \begin{align*}
 \underline{r}_N^* &= \min_{i,j,\ \underline{r}_{i,j}>0} \underline{r}_{i,j}\:N_j\\
-A &= \left\lceil \frac{log T}{\underline{r}_N^{*}} \right\rceil\\
+A &= \left\lceil \frac{\log T}{\underline{r}_N^{*}} \right\rceil\\
 \end{align*}
 Then we can group $A$ steps for each rounds and apply the previously described algorithm.
 
-\paragraph{If $\underline{R}=0$ : \\}
-Then we consider as if we had no sides information, no matter in which cluster the arm $I_t$ is picked therefore we can perform vanilla \textsc{Exp3} and drop the information about clusters.
+If some $\underbar{r}_{kl}=0$, we consider, when we choose $I(t)$ in cluster $k$, that we do not observe any observation in cluster $l$. The geometric resampling part of our algorithm in cluster $l$ is ignored, as we compute
+\begin{align*}
+\forall j \in \mathrm{Clust}_l\qquad
+\hat l_{t,j} = \left\{
+\begin{array}{c}
+\frac{1}{p_{t,I(t)}} \text{ if } j = I(t)\\
+0\text{ otherwise}
+\end{array}
+\right.
+\end{align*}
+We thus 'partially' apply the vanilla \textsc{Exp3} algorithm on some cluster (which depends on the choice $I(t)$. If the whole $\underbar{R}$ matrix is null, we have $A = 1$ episode size and the last equation is applied in every cluster, which amount to simply apply the vanilla \textsc{Exp3} algorithm on the multi-arm bandit problem.
+
+\section{Results}
+
+\paragraph{Algorithm correctness}Though we did not prove the correctness of $\underbar{R}$ estimation, we empirically tested that we always had a lower bound for $R$. We computed maximal expected regret along time for different adversary strategy (from totally adversarial (i.e. random) to more structured ones, comparing performance of original \textsc{Duplexp3} algorithm with our stochastic blockmodel tuned algorithm, and with vanilla \textsc{Exp3} algorithm. We mostly often observed domination of the regret curve for our algorithm, with occasional deviation, which was expected, as \textit{Duplexp3} is an adaption of the non-modified \textsc{Exp3} algorithm, which gets mistaken with non-zero probability.
+
+
+\paragraph{Adversarial settings}We expose performance of our three algorithms in an adversarial settings in Fig. \ref{fig:adversarial}, averaged over 50 tries using the same observation set. We observe that our algorithm seem to be upper-bounded, though \textsc{duplexp3} and \textsc{exp3} seem to yield equivalent regret - even on complicated SBM graph.
+
+\begin{figure}[ht]
+	\centering
+	\includegraphics[width=\textwidth]{adversarial}
+	\caption{Adversarial setting performance}
+	\label{fig:adversarial}
+\end{figure}
+
+\paragraph{Non-adversarial setting}Although our algorithm is designed to allow us to prove upper-bounds that cannot be proved on SBM graph using the original algorithm, we had difficulties observing considerable out-performance of our algorithm on SBM graphs. We observed original \textsc{Duplexp3} seemed to perform as well, if not better, in simple cases (i.e. when the random graph is 'not far' from being and Erdös-Rényi graph). This is partially due to the fact that original \textsc{duplexp3} tends to find a $\underbar{r}$ larger than $\min_{\underbar{r}_{ij} >0} \underbar{r}_{ij}$ and thus a smaller episode size $A$. Original algorithm thus learns facter, though theoretically less accurately. However, its accuracy appears to be sufficient on simple problems. We present an example of simple-problem results in Fig. \ref{fig:easy}, with 4 assortative clusters.
+
+\begin{figure}[ht]
+	\centering
+	\includegraphics[width=\textwidth]{easy}
+	\caption{Orginal algorithm outperforms our algorithm}
+	\label{fig:easy}
+\end{figure}
+
+In order to 'trick' the original algorithm, we designed a disassociative graph with 2 clusters, of size 100 and 10, and with rate matrix:
+\begin{align*}
+\begin{pmatrix}
+0.1 &0.02 \\
+0.02 & 0.08
+\end{pmatrix}
+\end{align*}
+
+That way we were able to make original \textsc{algorithm} overestimate the loss in cluster 2, and perform below \textsc{Exp3}. Setting the adversary to yield lesser loss within cluster 2, we observed that our algorithm outperformed the orginal, as shown in Fig. \ref{fig:hard}
+
+\begin{figure}[ht]
+	\centering
+	\includegraphics[width=\textwidth]{easy}
+	\caption{Outperformance of our algorithm}
+	\label{fig:hard}
+\end{figure}
+
+
+
+We should add that, although original algorithm seems to work better in some case, the regret that we observe for SBM algorithm seems to be asymptotically equivalent to the original algorithm regret in any case.
+
+\section{Conclusion}
+
+Adapting \cite{valko}, we proposed an algorithm that produce satisying maximal expected regret on labelled stochastic blockmodel random graph, for any connection matrix $R$. Its design should allow us to prove the existence of upper-bounds, simply adding cluster indices to \cite{valko} proofs. Futur work could include reflexion on a different algorithm for non labelled random graphs : the major issue there would be to find a correct estimation of labels in reasonable time.
+\bibliographystyle{plain}
+\bibliography{biblio}
 \end{document}

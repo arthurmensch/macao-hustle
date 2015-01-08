@@ -48,10 +48,12 @@ class Adversary:
 		self.game = game
 		self.N = game.N
 		self.T = game.T
-		N1 = int(self.N / 2)
-		N2 = self.N - N1
-		self.loss = np.hstack((np.random.uniform(5,10,size=[self.T,N1]),np.random.uniform(0,1,size=[self.T,N1])))
-
+		self.loss = np.zeros([self.T,self.N])
+		bias = np.arange(self.game.graph.num_cluster)*10
+		for i in range(0,self.game.graph.num_cluster):
+			self.loss[:,self.game.graph.C[i]] = bias[i]#+ np.tile(np.random.normal(0,5,size=[1,self.game.graph.cluster_size[i]]), reps=[self.T,1])
+		self.loss += np.random.normal(0,1,size=[self.T,self.N])
+		#self.loss = np.random.uniform(0,1,size=[self.T,self.N])
 class Game:
 	def __init__(self, graph, T, players_type,number):
 		self.graph = graph
@@ -81,14 +83,17 @@ class Game:
 			for j in range(0,self.num_players):
 				self.max_regret[:,j] += self.players[j].max_regret
 		self.max_regret /= self.number
-		pickle.dump(self.max_regret, open('data/max_regret.p','wb+'))
+		#pickle.dump(self.max_regret, open('data/max_regret.p','wb+'))
 
-	def display(self):
-		pickle.load(open('data/max_regret.p','rb'))
+	def display(self,j=0):
+		#		pickle.load(open('data/max_regret.p','rb'))
 		for i in range(0,self.num_players):
 			plt.plot(np.arange(self.T),self.max_regret[:,i],label = self.players_type[i].playerName)
 		plt.legend(loc=2)
-		plt.savefig('data/regret.pdf')
+		plt.xlabel('Time')
+		plt.ylabel('Maximal expected regret')
+		plt.savefig('data/regret'+str(j)+'.pdf')
+		plt.close()
 
 
 class Player:
@@ -119,7 +124,7 @@ class DuplexpPlayer(Player):
 	def __init__(self,game):
 		Player.__init__(self,game)
 		self.graph = game.graph
-		self.A = 2
+		self.A = 1
 		self.num_episode = int(np.ceil(self.T/self.A))
 		Toff = self.T + 2
 		episodeOff = self.num_episode + 2
@@ -131,6 +136,8 @@ class DuplexpPlayer(Player):
 		self.last_t = np.zeros([2,self.graph.num_cluster])
 		self.last_t_immediate = self.last_t.copy()
 		self.episode  = 1 #offset
+		self.tstart = self.t
+		self.rbar = np.zeros([self.graph.num_cluster,self.graph.num_cluster])
 
 	def play(self,observe,loss):
 		if self.estimate_phase :
@@ -144,7 +151,8 @@ class DuplexpPlayer(Player):
 			self.rbar = rbar
 			#print(rbar)
 			rstar = min([self.rbar[i,j]*self.graph.cluster_size[j] if self.rbar[i,j] > 0 else self.N for i,j in zip(range(0,self.graph.num_cluster),range(0,self.graph.num_cluster))])
-			self.A = int(np.ceil(np.log(self.T))/rstar)
+			self.A = max(1,int(np.ceil(np.log(self.T))/rstar))
+			#self.A =4
 			print(self.A)
 			self.estimate_phase=False
 		else :
@@ -175,10 +183,12 @@ class DuplexpPlayer(Player):
 		cI = self.graph.find_cluster(I)
 		M = np.zeros(self.graph.num_cluster)
 		for k in range(0,self.graph.num_cluster):
+			#print(k)
 			Oc = self.O[self.last_t[e,cI],self.graph.C[k]]
 			if k == cI:
-				I_last = self.I[self.last_t[e,cI]]
-				Oc = np.delete(Oc,I_last-self.graph.cluster_bounds[self.graph.find_cluster(I_last)])
+				I_last = self.I[self.last_t[e,cI]] if self.last_t[e,cI] >= 2 else 0
+				cI_last = self.graph.find_cluster(I_last)
+				Oc = np.delete(Oc,I_last-self.graph.cluster_bounds[cI_last]) #max for first 2 phase (hack)
 			min_i = np.nonzero(Oc)[0]
 			M[k] = min_i[0] if np.size(min_i) > 0 else self.graph.cluster_size[k]-1
 		self.last_t_immediate[e,cI] = t
@@ -283,15 +293,35 @@ class DuplexpPlayerErdos(DuplexpPlayer):
 		super(DuplexpPlayerErdos,self).__init__(game)
 		self.graph = Graph([sum(self.graph.cluster_size)],[1])
 
+
+class ExpPlayer(DuplexpPlayer):
+	playerName = 'Exp player'
+
+	def __init__(self,game):
+		super(ExpPlayer,self).__init__(game)
+
+	def play(self,observe,loss):
+		def observe_exp(I):
+			A = np.zeros(self.N)
+			A[I] = 1
+			return A
+		if self.t < self.T:
+			I = self.choose_arm(observe_exp,loss[self.t,:])
+			self.I[self.t] = I
+			self.regret += loss[self.t,I] - loss[self.t,:]
+			self.max_regret[self.t]  = np.max(self.regret)
+			self.t += 1
 def test():
-	T = 3000
-	num = 1
-	graph = Graph([100,100,100],np.array([[0.1,0.5,0],[0.05,0.2,0.5],[0.1,0.5,0.05]])/10)
-	#graph = Graph([600],np.array([[0.2]]))
-	players_type = [DuplexpPlayer,DuplexpPlayerErdos]
-	game = Game(graph,T,players_type,num)
-	game.run()
-	game.display()
+	for i in range(0,1):
+		T = 2000
+		num = 10
+		#graph = Graph([50,10,50,10],np.array([[0.1,0.2,0.7,0.1],[0.6,0.1,0.2,0.9],[0.1,0.2,0.8,0.4],[0.4,0.1,0.9,0.5]]))
+		graph = Graph([10,100],np.array([[0.9,0.02],[0.02,0.1]]))
+		#graph = Graph([600],np.array([[0.2]]))
+		players_type = [DuplexpPlayer,DuplexpPlayerErdos,ExpPlayer]
+		game = Game(graph,T,players_type,num)
+		game.run()
+		game.display(i)
 
 if __name__ == '__main__':
 	test()
