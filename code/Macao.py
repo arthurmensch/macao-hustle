@@ -4,6 +4,7 @@ import numpy as np
 import pickle
 import math
 import matplotlib as mpl
+import graph_tool.all as gt
 
 mpl.use("pgf")
 pgf_with_pdflatex = {
@@ -42,6 +43,13 @@ class Graph:
 			obs[self.cluster_bounds[i]:self.cluster_bounds[i+1]] = np.random.choice(2, size=self.cluster_size[i], p =[1-self.r_mat[c,i], self.r_mat[c,i]])
 		obs[I] = 1
 		return obs
+
+	def draw(self):
+		g, bm = gt.random_graph(self.N, lambda i,b: np.random.poisson(sum([self.cluster_size[c]*self.r_mat[b,c]/10 for c in range(0,self.num_cluster)])),
+							directed=False, model='blockmodel-traditional',
+							block_membership=lambda i: self.find_cluster(i),vertex_corr=lambda i,j: self.r_mat[i,j])
+		gt.graph_draw(g, vertex_fill_color=bm, edge_color="black", output="blockmodel.png")
+
 
 class Adversary:
 	def __init__(self, game):
@@ -318,10 +326,25 @@ def test():
 		#graph = Graph([50,10,50,10],np.array([[0.1,0.2,0.7,0.1],[0.6,0.1,0.2,0.9],[0.1,0.2,0.8,0.4],[0.4,0.1,0.9,0.5]]))
 		graph = Graph([10,100],np.array([[0.9,0.02],[0.02,0.1]]))
 		#graph = Graph([600],np.array([[0.2]]))
+		graph = Graph([500,10,500,100],associative_array(4))
+		graph.draw()
 		players_type = [DuplexpPlayer,DuplexpPlayerErdos,ExpPlayer]
 		game = Game(graph,T,players_type,num)
 		game.run()
 		game.display(i)
+
+
+def associative_array(N):
+	res = np.ones([N,N]) * 0.001
+	for i in range(0,N):
+		res[i,i] = 0.5
+	return res
+
+
+def draw_graph():
+	#graph = Graph([100,1000],np.array([[0.9,0.02],[0.02,0.1]])/10)
+	#graph = Graph([500,100,500,100],np.array([[0.1,0.2,0.7,0.1],[0.6,0.1,0.2,0.9],[0.1,0.2,0.8,0.4],[0.4,0.1,0.9,0.5]]))
+	graph.draw()
 
 if __name__ == '__main__':
 	test()
