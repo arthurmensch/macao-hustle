@@ -1,4 +1,4 @@
-\documentclass[11pt)]{beamer}
+\documentclass[11pt]{beamer}
 \usetheme{Copenhagen}
 
 \defbeamertemplate*{headline}{split}
@@ -51,6 +51,9 @@
 \institute{Reinforcement Learning} 
 \date{January 2015} 
 %\subject{}
+
+\DeclareMathOperator*{\expect}{\mathbb{E}}
+
 \AtBeginSection[]
 {
   \begin{frame}
@@ -113,14 +116,14 @@ p_{t+2,i}\propto w_{t+2,i}= \frac{1}{N} \exp\left( -\eta_{t+2} \hat{L}_{t,i} \ri
 \begin{figure}[ht]
 	\centering
 	\includegraphics[width=.5\textwidth]{blockmodel_unsuccess}
-	\caption{Neighbour communities}
+	\caption{Neighbor communities}
 \end{figure}
 \end{frame}
 
 \begin{frame}{Probability of side information}
 \begin{itemize}
 \item N clusters
-\item Labelled vertices
+\item Labeled vertices
 \item $R=(r_{ij})_{1 \leq i,j \leq n} $ the matrix representing the probability of having side information.
 \item $r_{ij}$ represents the probability that a vertex of the cluster $j$ reveals his loss to a given vertex of the cluster $i$
 \end{itemize}
@@ -160,11 +163,13 @@ p_{t+2,i}\propto w_{t+2,i}= \frac{1}{N} \exp\left( -\eta_{t+2} \hat{L}_{t,i} \ri
 
 \end{frame}
 
-\begin{frame}{Lower bounding R}
-
-\end{frame}
-
 \begin{frame}{Generalized algorithm}
+
+\begin{itemize}
+\item We adapt \textsc{Estimate\_r} so that it returns $underline{R}$ where $\underline{r}_{ij} \leq r_{ij}$ with high probability.
+\item This is done at the relatively low cost $\expect\left({\tau}\right) \leq \sum_{i,j \in [N]^2} \frac{4\log T}{N_i} \mathbf{1}_{r_{ij} > \frac{1}{N_j}} + \sqrt{T} \mathbf{1}_{r_{ij} < \frac{1}{N_j}}+ \mathrm{Cste}$
+\end{itemize}
+
 \begin{align*}
 &\text{If }\underline{R}=0,\ & \text{ we run vanilla } \textsc{Exp3}.\\
 &\text{If } \min_{i,j,\ \underline{r}_{i,j}>0} \left(\underline{r}_{ij}\: N_j \right) \geq \log T ,\  & \text{ we run adapted }\textsc{Duplex}. \\
@@ -180,7 +185,11 @@ p_{t+2,i}\propto w_{t+2,i}= \frac{1}{N} \exp\left( -\eta_{t+2} \hat{L}_{t,i} \ri
 \begin{figure}[ht]
 	\centering
 	\includegraphics[width=.6\textwidth]{blockmodel_success}
+<<<<<<< HEAD
 	\caption{Graph (at one $t$)}
+=======
+	\caption{Neighbor communities}
+>>>>>>> 82a91bf5efa05492632082ce698c5ae1de35a1ee
 \end{figure}
 \end{frame}
 
