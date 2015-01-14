@@ -29,6 +29,7 @@ class Graph:
 		self.N = self.cluster_bounds[self.num_cluster]
 		self.nodes = np.arange(self.N)
 		self.C = []
+		self.obs_dict = {}
 		for i in range(0,self.num_cluster):
 			self.C.append(self.nodes[self.cluster_bounds[i]:self.cluster_bounds[i+1]])
 		self.r_mat = r_mat
@@ -37,12 +38,19 @@ class Graph:
 		return np.searchsorted(self.cluster_bounds,I,side='right')-1
 
 	def observe(self, I):
-		c = self.find_cluster(I)
-		obs = np.zeros(self.N)
-		for i in range(0,self.num_cluster):
-			obs[self.cluster_bounds[i]:self.cluster_bounds[i+1]] = np.random.choice(2, size=self.cluster_size[i], p =[1-self.r_mat[c,i], self.r_mat[c,i]])
-		obs[I] = 1
+		if I in self.obs_dict.keys():
+			obs = self.obs_dict[I]
+		else:
+			c = self.find_cluster(I)
+			obs = np.zeros(self.N)
+			for i in range(0,self.num_cluster):
+				obs[self.cluster_bounds[i]:self.cluster_bounds[i+1]] = np.random.choice(2, size=self.cluster_size[i], p =[1-self.r_mat[c,i], self.r_mat[c,i]])
+			obs[I] = 1
+			self.obs_dict[i] = obs
 		return obs
+
+	def next(self):
+		self.obs_dict = {}
 
 	def draw(self):
 		g, bm = gt.random_graph(self.N, lambda i,b: np.random.poisson(sum([self.cluster_size[c]*(self.r_mat[b,c]) for c in range(0,self.num_cluster)])/10),
@@ -57,7 +65,7 @@ class Adversary:
 		self.N = game.N
 		self.T = game.T
 		self.loss = np.zeros([self.T,self.N])
-		bias = np.arange(self.game.graph.num_cluster)*10
+		bias = np.arange(self.game.graph.num_cluster)/(self.N)
 		for i in range(0,self.game.graph.num_cluster):
 			self.loss[:,self.game.graph.C[i]] = bias[i]#+ np.tile(np.random.normal(0,5,size=[1,self.game.graph.cluster_size[i]]), reps=[self.T,1])
 		self.loss += np.random.normal(0,1,size=[self.T,self.N])
@@ -75,22 +83,25 @@ class Game:
 
 	def init(self):
 		self.adversary = Adversary(self)
-		self.players =  [self.players_type[i](self) for i in range(0,self.num_players)]
+		self.players =  [[self.players_type[i](self) for i in range(0,self.num_players)] for j in range(0,self.number)]
 
 	def round(self):
 		observe = self.graph.observe
 		loss = self.adversary.loss
-		for player in self.players:
-			player.play(observe,loss)
+		for player_set in self.players:
+			for player in player_set:
+				player.play(observe,loss)
 
 	def run(self):
-		for i in range(0,self.number):
-			self.init()
-			for i in range(0,self.T):
-				self.round()
-			for j in range(0,self.num_players):
-				self.max_regret[:,j] += self.players[j].max_regret
+		self.init()
+		for t in range(0,self.T):
+			self.round()
+			self.graph.next()
+		for i in range(0,self.num_players):
+			for j in range(0,self.number):
+				self.max_regret[:,i] += self.players[j][i].max_regret
 		self.max_regret /= self.number
+		self.graph.next()
 		#pickle.dump(self.max_regret, open('data/max_regret.p','wb+'))
 
 	def display(self,j=0):
@@ -321,12 +332,12 @@ class ExpPlayer(DuplexpPlayer):
 			self.t += 1
 def test():
 	for i in range(0,1):
-		T = 500
-		num = 1
+		T = 2000
+		num = 10
 		#graph = Graph([50,10,50,10],np.array([[0.1,0.2,0.7,0.1],[0.6,0.1,0.2,0.9],[0.1,0.2,0.8,0.4],[0.4,0.1,0.9,0.5]]))
 		#graph = Graph([100,1000],np.array([[0.9,0.01],[0.01,0.1]]))
 		#graph = Graph([600],np.array([[0.2]]))
-		graph = Graph([100,100,100,100],neighbour_array(4))
+		graph = Graph([100,100,100,100],associative_array(4))
 		graph.draw()
 		players_type = [DuplexpPlayer,DuplexpPlayerErdos,ExpPlayer]
 		game = Game(graph,T,players_type,num)
@@ -336,10 +347,10 @@ def test():
 
 def associative_array(N):
 	res = np.ones([N,N]) * 0.001
-	connect = [0.9, 0.1, 0.1, 0.7]
+	connect = [0.99, 0.99, 0.99, 0.99]
 	for i in range(0,N):
 		res[i,i] = connect[i]
-	return res/10
+	return res
 
 def neighbour_array(N):
 	res = np.ones([N,N]) * 0.001
