@@ -1,1 +1,2 @@
-\beamer@endinputifotherversion {3.24pt}
+\beamer@endinputifotherversion {3.19pt}
+\beamer@sectionintoc {1}{Exp3 on Erd\IeC {\"o}s-R\IeC {\'e}nyi Graph}{2}{0}{1}
