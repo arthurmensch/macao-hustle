@@ -45,7 +45,7 @@ class Graph:
 		return obs
 
 	def draw(self):
-		g, bm = gt.random_graph(self.N, lambda i,b: np.random.poisson(sum([self.cluster_size[c]*self.r_mat[b,c]/10 for c in range(0,self.num_cluster)])),
+		g, bm = gt.random_graph(self.N, lambda i,b: np.random.poisson(1/sum([self.cluster_size[c]*(self.r_mat[b,c]) for c in range(0,self.num_cluster)])/self.N),
 							directed=False, model='blockmodel-traditional',
 							block_membership=lambda i: self.find_cluster(i),vertex_corr=lambda i,j: self.r_mat[i,j])
 		gt.graph_draw(g, vertex_fill_color=bm, edge_color="black", output="blockmodel.png")
@@ -321,12 +321,12 @@ class ExpPlayer(DuplexpPlayer):
 			self.t += 1
 def test():
 	for i in range(0,1):
-		T = 2000
-		num = 10
+		T = 500
+		num = 1
 		#graph = Graph([50,10,50,10],np.array([[0.1,0.2,0.7,0.1],[0.6,0.1,0.2,0.9],[0.1,0.2,0.8,0.4],[0.4,0.1,0.9,0.5]]))
-		graph = Graph([10,100],np.array([[0.9,0.02],[0.02,0.1]]))
+		graph = Graph([100,1000],np.array([[0.9,0.01],[0.01,0.1]]))
 		#graph = Graph([600],np.array([[0.2]]))
-		graph = Graph([500,10,500,100],associative_array(4))
+		#graph = Graph([100,100,100,100],associative_array(4))
 		graph.draw()
 		players_type = [DuplexpPlayer,DuplexpPlayerErdos,ExpPlayer]
 		game = Game(graph,T,players_type,num)
@@ -336,8 +336,19 @@ def test():
 
 def associative_array(N):
 	res = np.ones([N,N]) * 0.001
+	connect = [0.1, 0.1, 0.1, 0.7]
+	for i in range(0,N):
+		res[i,i] = connect[i]
+	return res/10
+
+def neighbour_array(N):
+	res = np.ones([N,N]) * 0.001
 	for i in range(0,N):
 		res[i,i] = 0.5
+		if i > 0:
+			res[i,(i-1) % N] = 0.1
+		if i < N-1:
+			res[i,(i+1) % N] = 0.1
 	return res
 
 

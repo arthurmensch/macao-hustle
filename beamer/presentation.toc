@@ -1,4 +1,4 @@
-\beamer@endinputifotherversion {3.19pt}
+\beamer@endinputifotherversion {3.24pt}
 \beamer@sectionintoc {1}{\textsc {Exp3} on Erd\IeC {\"o}s-R\IeC {\'e}nyi Graph}{2}{0}{1}
-\beamer@sectionintoc {2}{\textsc {Exp3} on Stochastic Block-Model Graphs}{5}{0}{2}
-\beamer@sectionintoc {3}{results}{10}{0}{3}
+\beamer@sectionintoc {2}{\textsc {Exp3} on Stochastic Block-Model Graphs}{6}{0}{2}
+\beamer@sectionintoc {3}{Results}{13}{0}{3}
