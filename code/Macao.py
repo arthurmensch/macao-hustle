@@ -324,9 +324,9 @@ def test():
 		T = 500
 		num = 1
 		#graph = Graph([50,10,50,10],np.array([[0.1,0.2,0.7,0.1],[0.6,0.1,0.2,0.9],[0.1,0.2,0.8,0.4],[0.4,0.1,0.9,0.5]]))
-		graph = Graph([100,1000],np.array([[0.9,0.01],[0.01,0.1]]))
+		#graph = Graph([100,1000],np.array([[0.9,0.01],[0.01,0.1]]))
 		#graph = Graph([600],np.array([[0.2]]))
-		#graph = Graph([100,100,100,100],associative_array(4))
+		graph = Graph([100,100,100,100],neighbour_array(4))
 		graph.draw()
 		players_type = [DuplexpPlayer,DuplexpPlayerErdos,ExpPlayer]
 		game = Game(graph,T,players_type,num)
@@ -336,7 +336,7 @@ def test():
 
 def associative_array(N):
 	res = np.ones([N,N]) * 0.001
-	connect = [0.1, 0.1, 0.1, 0.7]
+	connect = [0.9, 0.1, 0.1, 0.7]
 	for i in range(0,N):
 		res[i,i] = connect[i]
 	return res/10
@@ -344,7 +344,7 @@ def associative_array(N):
 def neighbour_array(N):
 	res = np.ones([N,N]) * 0.001
 	for i in range(0,N):
-		res[i,i] = 0.5
+		res[i,i] = 0.9
 		if i > 0:
 			res[i,(i-1) % N] = 0.1
 		if i < N-1:

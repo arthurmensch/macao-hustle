@@ -110,7 +110,11 @@ p_{t+2,i}\propto w_{t+2,i}= \frac{1}{N} \exp\left( -\eta_{t+2} \hat{L}_{t,i} \ri
 
 \section{\textsc{Exp3} on Stochastic Block-Model Graphs}
 \begin{frame}{Random graph with Stochastic Block-Model}
-ZE figure!
+\begin{figure}[ht]
+	\centering
+	\includegraphics[width=.5\textwidth]{blockmodel_unsuccess}
+	\caption{Neighbour communities}
+\end{figure}
 \end{frame}
 
 \begin{frame}{Probability of side information}
@@ -142,12 +146,18 @@ ZE figure!
 \end{frame}
 
 \begin{frame}{Sampling $M_t^i$}
+
+\begin{block}{Algorithm adaptation}
 \begin{itemize}
 \item Using previous observations
 \item Ensure independence of $M_t$ and $O_t$
 \item Find the last $O_{t'}$, with $t' \equiv t -1 [2]$ in which $C(I(t')) = C(I(t))$
 \item Average the distance between two observation within cluster $C(j)$.
 \end{itemize}
+\end{block}
+
+\alert{Keeping track of last time we picked $I$ in cluster $i$}
+
 \end{frame}
 
 \begin{frame}{Lower bounding R}
@@ -167,24 +177,41 @@ ZE figure!
 \section{Results}
 
 \begin{frame}{Heavily unbalanced graph}
-
 \begin{figure}[ht]
 	\centering
-	\includegraphics[width=0.8\textwidth]{hard}
-	\caption{Outperformance of our algorithm}
-	\label{fig:hard}
+	\includegraphics[width=.6\textwidth]{blockmodel_success}
+	\caption{Neighbour communities}
 \end{figure}
-
 \end{frame}
 
 \begin{frame}{Graph 'close' to Erdös-Rényi}
 
 \begin{figure}[ht]
 	\centering
-	\includegraphics[width=0.8\textwidth]{easy}
+	\includegraphics[width=0.8\textwidth]{regret_success}
 	\caption{Orginal algorithm outperforms our algorithm}
 	\label{fig:easy}
 \end{figure}
 \end{frame}
+
+\begin{frame}{Graph 'close' to Erdös-Rényi}
+\begin{figure}[ht]
+	\centering
+	\includegraphics[width=.5\textwidth]{blockmodel_unsuccess}
+	\caption{Neighbour communities}
+\end{figure}
+\end{frame}
+
+\begin{frame}{Graph 'close' to Erdös-Rényi}
+
+\begin{figure}[ht]
+	\centering
+	\includegraphics[width=0.8\textwidth]{regret_unsuccess}
+	\caption{Orginal algorithm outperforms our algorithm}
+	\label{fig:easy}
+\end{figure}
+\end{frame}
+
+
 
 \end{document}
