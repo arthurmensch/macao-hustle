@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="036cbe52-2031-48b0-9af2-5b5c29c249fb" name="Default" comment="">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/code/blockmodel.pdf" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/code/blockmodel.png" afterPath="$PROJECT_DIR$/code/blockmodel.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/code/Macao.py" afterPath="$PROJECT_DIR$/code/Macao.py" />
     </list>
     <ignored path="macao-hustle.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -30,8 +30,8 @@
       <file leaf-file-name="Macao.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/code/Macao.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.28399312" vertical-offset="540" max-vertical-offset="5505">
-              <caret line="47" column="67" selection-start-line="47" selection-start-column="67" selection-end-line="47" selection-end-column="67" />
+            <state vertical-scroll-proportion="0.74870914" vertical-offset="270" max-vertical-offset="5505">
+              <caret line="47" column="153" selection-start-line="47" selection-start-column="153" selection-end-line="47" selection-end-column="153" />
               <folding>
                 <element signature="e#23#41#0" expanded="true" />
               </folding>
@@ -307,7 +307,7 @@
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.093305215" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.39827773" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32938644" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32938644" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32938644" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="10" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
@@ -482,8 +482,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/code/Macao.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.28399312" vertical-offset="540" max-vertical-offset="5505">
-          <caret line="47" column="67" selection-start-line="47" selection-start-column="67" selection-end-line="47" selection-end-column="67" />
+        <state vertical-scroll-proportion="0.74870914" vertical-offset="270" max-vertical-offset="5505">
+          <caret line="47" column="153" selection-start-line="47" selection-start-column="153" selection-end-line="47" selection-end-column="153" />
           <folding>
             <element signature="e#23#41#0" expanded="true" />
           </folding>

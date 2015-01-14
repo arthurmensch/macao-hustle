@@ -45,7 +45,7 @@ class Graph:
 		return obs
 
 	def draw(self):
-		g, bm = gt.random_graph(self.N, lambda i,b: np.random.poisson(1/sum([self.cluster_size[c]*(self.r_mat[b,c]) for c in range(0,self.num_cluster)])/self.N),
+		g, bm = gt.random_graph(self.N, lambda i,b: np.random.poisson(sum([self.cluster_size[c]*(self.r_mat[b,c]) for c in range(0,self.num_cluster)])/10),
 							directed=False, model='blockmodel-traditional',
 							block_membership=lambda i: self.find_cluster(i),vertex_corr=lambda i,j: self.r_mat[i,j])
 		gt.graph_draw(g, vertex_fill_color=bm, edge_color="black", output="blockmodel.png")
