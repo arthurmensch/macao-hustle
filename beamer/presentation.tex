@@ -163,13 +163,15 @@ p_{t+2,i}\propto w_{t+2,i}= \frac{1}{N} \exp\left( -\eta_{t+2} \hat{L}_{t,i} \ri
 
 \end{frame}
 
-\begin{frame}{Generalized algorithm}
 
+\begin{frame}{Lower bounding R}
 \begin{itemize}
-\item We adapt \textsc{Estimate\_r} so that it returns $underline{R}$ where $\underline{r}_{ij} \leq r_{ij}$ with high probability.
+\item We adapt \textsc{Estimate\_r} so that it returns $\underline{R}$ where $\underline{r}_{ij} \leq r_{ij}$ with high probability.
 \item This is done at the relatively low cost $\expect\left({\tau}\right) \leq \sum_{i,j \in [N]^2} \frac{4\log T}{N_i} \mathbf{1}_{r_{ij} > \frac{1}{N_j}} + \sqrt{T} \mathbf{1}_{r_{ij} < \frac{1}{N_j}}+ \mathrm{Cste}$
 \end{itemize}
+\end{frame}
 
+\begin{frame}{Generalized algorithm with stochastic blockmodel graphs}
 \begin{align*}
 &\text{If }\underline{R}=0,\ & \text{ we run vanilla } \textsc{Exp3}.\\
 &\text{If } \min_{i,j,\ \underline{r}_{i,j}>0} \left(\underline{r}_{ij}\: N_j \right) \geq \log T ,\  & \text{ we run adapted }\textsc{Duplex}. \\
