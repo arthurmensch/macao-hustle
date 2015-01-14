@@ -4,16 +4,6 @@
     <list default="true" id="036cbe52-2031-48b0-9af2-5b5c29c249fb" name="Default" comment="">
       <change type="DELETED" beforePath="$PROJECT_DIR$/code/blockmodel.pdf" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/code/blockmodel.png" afterPath="$PROJECT_DIR$/code/blockmodel.png" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/beamer/presentation.pdf" afterPath="$PROJECT_DIR$/beamer/presentation.pdf" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/beamer/presentation.synctex.gz" afterPath="$PROJECT_DIR$/beamer/presentation.synctex.gz" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/code/Macao.py" afterPath="$PROJECT_DIR$/code/Macao.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/beamer/presentation.aux" afterPath="$PROJECT_DIR$/beamer/presentation.aux" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/beamer/presentation.log" afterPath="$PROJECT_DIR$/beamer/presentation.log" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/beamer/presentation.nav" afterPath="$PROJECT_DIR$/beamer/presentation.nav" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/beamer/presentation.out" afterPath="$PROJECT_DIR$/beamer/presentation.out" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/beamer/presentation.snm" afterPath="$PROJECT_DIR$/beamer/presentation.snm" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/beamer/presentation.tex" afterPath="$PROJECT_DIR$/beamer/presentation.tex" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/beamer/presentation.toc" afterPath="$PROJECT_DIR$/beamer/presentation.toc" />
     </list>
     <ignored path="macao-hustle.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -41,7 +31,7 @@
         <entry file="file://$PROJECT_DIR$/code/Macao.py">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.28399312" vertical-offset="540" max-vertical-offset="5505">
-              <caret line="47" column="72" selection-start-line="47" selection-start-column="72" selection-end-line="47" selection-end-column="72" />
+              <caret line="47" column="67" selection-start-line="47" selection-start-column="67" selection-end-line="47" selection-end-column="67" />
               <folding>
                 <element signature="e#23#41#0" expanded="true" />
               </folding>
@@ -317,7 +307,7 @@
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.093305215" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.39827773" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32938644" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32938644" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32938644" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="10" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
@@ -493,7 +483,7 @@
     <entry file="file://$PROJECT_DIR$/code/Macao.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.28399312" vertical-offset="540" max-vertical-offset="5505">
-          <caret line="47" column="72" selection-start-line="47" selection-start-column="72" selection-end-line="47" selection-end-column="72" />
+          <caret line="47" column="67" selection-start-line="47" selection-start-column="67" selection-end-line="47" selection-end-column="67" />
           <folding>
             <element signature="e#23#41#0" expanded="true" />
           </folding>
