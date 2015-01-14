@@ -1,0 +1,51 @@
+\documentclass[11pt]{beamer}
+\usetheme{Copenhagen}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{lmodern}
+\graphicspath{ {./figures/} }
+
+\author{Arthur Mensch, Michaël Weiss}
+\title{Bandits on stochastic block-model graphs
+}
+%\setbeamercovered{transparent} 
+\setbeamertemplate{navigation symbols}{} 
+%\logo{} 
+%\institute{} 
+%\date{} 
+%\subject{} 
+\begin{document}
+
+\begin{frame}
+\titlepage
+\end{frame}
+
+%\begin{frame}
+%\tableofcontents
+%\end{frame}
+
+\begin{frame}{Heavily unbalanced graph}
+
+\begin{figure}[ht]
+	\centering
+	\includegraphics[width=0.8\textwidth]{hard}
+	\caption{Outperformance of our algorithm}
+	\label{fig:hard}
+\end{figure}
+
+\end{frame}
+
+\begin{frame}{Graph 'close' to Erdös-Rényi}
+
+\begin{figure}[ht]
+	\centering
+	\includegraphics[width=0.8\textwidth]{easy}
+	\caption{Orginal algorithm outperforms our algorithm}
+	\label{fig:easy}
+\end{figure}
+\end{frame}
+
+\end{document}
