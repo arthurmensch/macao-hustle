@@ -171,7 +171,7 @@ So we can compute,
 \hat{l}_{t,i}=G_{t,i}O_{t,i}l_{t,i}
 \end{align}
 \begin{itemize}
-\item Estimator $G_{i,t} \sim G(p_{t,i}+(1-p_{t,i})r_{I_t,i})$
+\item Estimator $G_{t,i} \sim G(p_{t,i}+(1-p_{t,i})r_{I_t,i})$
 \item $M_t^i$ truncated geometric law of parameter $p_{t,i}$
 \item[$\rightarrow$] $G_{t,i}=\min\left(K_{t,i},M_t^i\right)$
 \end{itemize}
@@ -184,8 +184,8 @@ So we can compute,
 \begin{itemize}
 \item Using previous observations
 \item Ensure independence of $M_t$ and $O_t$
-\item Find the last $O_{t'}$, with $t' \equiv t -1 [2]$ in which $C(I(t')) = C(I(t))$
-\item Average the distance between two observation within cluster $C(j)$.
+\item Find the last $O_{t'}$, with $t' -t \equiv 1 [2]$ in which $C(I(t')) = C(I(t))$
+\item Average the distance between two observation within cluster $C(I(t))$.
 \end{itemize}
 \end{block}
 
