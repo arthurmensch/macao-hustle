@@ -2,16 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="036cbe52-2031-48b0-9af2-5b5c29c249fb" name="Default" comment="">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/beamer/figures/regret_success.pdf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/beamer/figures/regret_success_easy.pdf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/beamer/figures/regret_unsuccess.pdf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/beamer/figures/regret_unsuccess_easy.pdf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/code/blockmodel.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/code/blockmodel_hard.pdf" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/beamer/presentation.pdf" afterPath="$PROJECT_DIR$/beamer/presentation.pdf" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/code/Macao.py" afterPath="$PROJECT_DIR$/code/Macao.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/beamer/presentation.tex" afterPath="$PROJECT_DIR$/beamer/presentation.tex" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="macao-hustle.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -304,7 +295,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-1" y="0" width="1922" height="1055" extended-state="6" />
+    <frame x="-1" y="0" width="1922" height="1055" extended-state="7" />
     <editor active="true" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32938644" sideWeight="0.5" order="12" side_tool="false" content_ui="tabs" />

@@ -191,19 +191,40 @@ So we can compute,
 
 \section{Results}
 
-\begin{frame}{Heavily unbalanced graph}
-\begin{figure}[ht]
-	\centering
-	\includegraphics[width=.6\textwidth]{blockmodel_success}
-<<<<<<< HEAD
-	\caption{Graph (at one $t$)}
-=======
-	\caption{Neighbor communities}
->>>>>>> 82a91bf5efa05492632082ce698c5ae1de35a1ee
-\end{figure}
+
+\begin{frame}{Test graphs}
+\vspace{-1em}
+\begin{columns}
+	\begin{column}{.5\textwidth}
+		\begin{figure}[ht]
+			\centering
+			\includegraphics[width=.5\textwidth]{blockmodel0}
+			\caption{Weakly assossiative}
+		\end{figure}
+		\vspace{-2em}
+		\begin{figure}[ht]
+			\centering
+			\includegraphics[width=.5\textwidth]{blockmodel1}
+			\caption{Neighbours}
+		\end{figure}
+	\end{column}
+	\begin{column}{.5\textwidth}
+		\begin{figure}[ht]
+			\centering
+			\includegraphics[width=.5\textwidth]{blockmodel2}
+			\caption{Unbalanced}
+		\end{figure}
+		\vspace{-2em}
+		\begin{figure}[ht]
+			\centering
+			\includegraphics[width=.5\textwidth]{blockmodel3}
+			\caption{Erdos-Rényi}
+		\end{figure}
+	\end{column}
+\end{columns}
 \end{frame}
 
-\begin{frame}{Graph 'close' to Erdös-Rényi}
+\begin{frame}{Unbalanced}
 \begin{figure}[ht]
 	\centering
 	\includegraphics[width=.8\textwidth]{regret_unbalanced_easy}
@@ -211,7 +232,7 @@ So we can compute,
 \end{figure}
 \end{frame}
 
-\begin{frame}{Graph 'close' to Erdös-Rényi}
+\begin{frame}{Unbalanced}
 \begin{figure}[ht]
 	\centering
 	\includegraphics[width=.8\textwidth]{regret_unbalanced_easy}
@@ -219,18 +240,7 @@ So we can compute,
 \end{figure}
 \end{frame}
 
-\begin{frame}{Graph 'close' to Erdös-Rényi}
-
-\begin{figure}[ht]
-	\centering
-	\includegraphics[width=0.6\textwidth]{blockmodel_unsuccess}
-	\caption{Graph (at one $t$)}
-	\label{fig:easy}
-\end{figure}
-\end{frame}
-
-\begin{frame}{Graph 'close' to Erdös-Rényi}
-
+\begin{frame}{Neighbours}
 \begin{figure}[ht]
 	\centering
 	\includegraphics[width=0.8\textwidth]{regret_balanced_easy}
@@ -239,7 +249,7 @@ So we can compute,
 \end{figure}
 \end{frame}
 
-\begin{frame}{Graph 'close' to Erdös-Rényi}
+\begin{frame}{Neighbours}
 \begin{figure}[ht]
 	\centering
 	\includegraphics[width=0.8\textwidth]{regret_balanced_hard}
