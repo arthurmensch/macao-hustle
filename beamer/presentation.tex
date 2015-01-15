@@ -89,6 +89,10 @@ $\left(O_t\right)_{_i\in\left[N\right]}$ corresponds to the value of the logic e
 \end{frame}
 
 \begin{frame}{Duplex tricks}
+Ideally,
+\[
+\hat{l}_{t,i}=\frac{O_{t,i}l_{t,i}}{p_{t,i} + (1-p_{t,i})r}.
+\]
 \begin{block}{Definition geometrical random variables}
 \begin{align*}
 M_t^* &=\min\{1\leq i<N: O_{t-1,i}^{'} =1\}\cup\{N\}\\
@@ -97,7 +101,7 @@ G_{t,i}&=\min\left(K_{t,i},M_t\right)
 \end{block}
 \begin{block}{Independence}
 \begin{align*}
-p_{t+2,i}\propto w_{t+2,i}= \frac{1}{N} \exp\left( -\eta_{t+2} \hat{L}_{t,i} \right)
+p_{t+2,i} \text{ estimated at the end of the step t.}
 \end{align*}
 \end{block}
 So we can compute,
