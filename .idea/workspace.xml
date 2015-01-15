@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="036cbe52-2031-48b0-9af2-5b5c29c249fb" name="Default" comment="" />
+    <list default="true" id="036cbe52-2031-48b0-9af2-5b5c29c249fb" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/beamer/presentation.pdf" afterPath="$PROJECT_DIR$/beamer/presentation.pdf" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+    </list>
     <ignored path="macao-hustle.iws" />
     <ignored path=".idea/workspace.xml" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -27,8 +30,8 @@
       <file leaf-file-name="Macao.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/code/Macao.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.16666667" vertical-offset="4881" max-vertical-offset="5565">
-              <caret line="332" column="16" selection-start-line="332" selection-start-column="16" selection-end-line="332" selection-end-column="16" />
+            <state vertical-scroll-proportion="-1.8282828" vertical-offset="3711" max-vertical-offset="5565">
+              <caret line="175" column="31" selection-start-line="175" selection-start-column="24" selection-end-line="175" selection-end-column="31" />
               <folding>
                 <element signature="e#23#41#0" expanded="true" />
               </folding>
@@ -519,8 +522,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/code/Macao.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.16666667" vertical-offset="4881" max-vertical-offset="5565">
-          <caret line="332" column="16" selection-start-line="332" selection-start-column="16" selection-end-line="332" selection-end-column="16" />
+        <state vertical-scroll-proportion="-1.8282828" vertical-offset="3711" max-vertical-offset="5565">
+          <caret line="175" column="31" selection-start-line="175" selection-start-column="24" selection-end-line="175" selection-end-column="31" />
           <folding>
             <element signature="e#23#41#0" expanded="true" />
           </folding>
