@@ -37,26 +37,23 @@ class Graph:
 	def find_cluster(self, I):
 		return np.searchsorted(self.cluster_bounds,I,side='right')-1
 
-	def observe(self, I):
-		if I in self.obs_dict.keys():
-			obs = self.obs_dict[I]
+	def observe(self, t, I):
+		if (t,I) in self.obs_dict.keys():
+			obs = self.obs_dict[(t,I)]
 		else:
 			c = self.find_cluster(I)
 			obs = np.zeros(self.N)
 			for i in range(0,self.num_cluster):
 				obs[self.cluster_bounds[i]:self.cluster_bounds[i+1]] = np.random.choice(2, size=self.cluster_size[i], p =[1-self.r_mat[c,i], self.r_mat[c,i]])
 			obs[I] = 1
-			self.obs_dict[i] = obs
+			self.obs_dict[(t,I)] = obs
 		return obs
 
-	def next(self):
-		self.obs_dict = {}
-
-	def draw(self):
+	def draw(self, i=0):
 		g, bm = gt.random_graph(self.N, lambda i,b: np.random.poisson(sum([self.cluster_size[c]*(self.r_mat[b,c]) for c in range(0,self.num_cluster)])/10),
 							directed=False, model='blockmodel-traditional',
 							block_membership=lambda i: self.find_cluster(i),vertex_corr=lambda i,j: self.r_mat[i,j])
-		gt.graph_draw(g, vertex_fill_color=bm, edge_color="black", output="blockmodel.png")
+		gt.graph_draw(g, vertex_fill_color=bm, edge_color="black", output="data/blockmodel"+str(i)+".png")
 
 
 class Adversary:
@@ -64,14 +61,15 @@ class Adversary:
 		self.game = game
 		self.N = game.N
 		self.T = game.T
+		self.snr = game.snr
 		self.loss = np.zeros([self.T,self.N])
-		bias = np.arange(self.game.graph.num_cluster)/(self.N)
+		bias = np.arange(self.game.graph.num_cluster)/(self.N)*self.snr
 		for i in range(0,self.game.graph.num_cluster):
 			self.loss[:,self.game.graph.C[i]] = bias[i]#+ np.tile(np.random.normal(0,5,size=[1,self.game.graph.cluster_size[i]]), reps=[self.T,1])
 		self.loss += np.random.normal(0,1,size=[self.T,self.N])
 		#self.loss = np.random.uniform(0,1,size=[self.T,self.N])
 class Game:
-	def __init__(self, graph, T, players_type,number):
+	def __init__(self, graph, T, players_type,number,snr):
 		self.graph = graph
 		self.N = self.graph.N
 		self.T = T
@@ -79,39 +77,38 @@ class Game:
 		self.players_type = players_type
 		self.num_players = len(self.players_type)
 		self.max_regret = np.zeros([self.T,self.num_players])
+		self.t = 0
+		self.snr = snr
 
 
 	def init(self):
 		self.adversary = Adversary(self)
-		self.players =  [[self.players_type[i](self) for i in range(0,self.num_players)] for j in range(0,self.number)]
+		self.players =  [self.players_type[i](self) for i in range(0,self.num_players)]
 
 	def round(self):
 		observe = self.graph.observe
 		loss = self.adversary.loss
-		for player_set in self.players:
-			for player in player_set:
-				player.play(observe,loss)
+		for player in self.players:
+			player.play(lambda I: observe(player.t,I),loss)
 
 	def run(self):
-		self.init()
-		for t in range(0,self.T):
-			self.round()
-			self.graph.next()
-		for i in range(0,self.num_players):
-			for j in range(0,self.number):
-				self.max_regret[:,i] += self.players[j][i].max_regret
+		for i in range(0,self.number):
+			self.init()
+			for t in range(0,self.T):
+				self.round()
+			for i in range(0,self.num_players):
+				self.max_regret[:,i] += self.players[i].max_regret
 		self.max_regret /= self.number
-		self.graph.next()
 		#pickle.dump(self.max_regret, open('data/max_regret.p','wb+'))
 
-	def display(self,j=0):
+	def display(self,j=0,snr=0):
 		#		pickle.load(open('data/max_regret.p','rb'))
 		for i in range(0,self.num_players):
 			plt.plot(np.arange(self.T),self.max_regret[:,i],label = self.players_type[i].playerName)
 		plt.legend(loc=2)
 		plt.xlabel('Time')
 		plt.ylabel('Maximal expected regret')
-		plt.savefig('data/regret'+str(j)+'.pdf')
+		plt.savefig('data/regret'+str(j)+'snr'+str(snr)+'.pdf')
 		plt.close()
 
 
@@ -165,7 +162,6 @@ class DuplexpPlayer(Player):
 				self.I[self.t+k]=I[k]
 				self.regret += loss[self.t+k,I[k]] - loss[self.t+k,:]
 				self.max_regret[self.t+k] = np.max(self.regret)
-			self.t+=s
 			self.tstart = self.t
 			self.rbar = rbar
 			#print(rbar)
@@ -240,6 +236,7 @@ class DuplexpPlayer(Player):
 		for i in range(0,self.graph.num_cluster):
 			lim=int(min(s+np.max(C),T))
 			for t in range(s,lim):
+				self.t += 1
 				l = loss[t]
 				I.append(np.random.randint(self.graph.cluster_bounds[i],self.graph.cluster_bounds[i+1]))
 				O = observe(I[t])
@@ -281,6 +278,7 @@ class DuplexpPlayer(Player):
 				M = np.zeros((self.graph.num_cluster,k))
 				ind=np.zeros(self.graph.num_cluster)
 				for t in range(s,T):
+					self.t += 1
 					l = loss[t]
 					I.append(np.random.randint(self.graph.cluster_bounds[i],self.graph.cluster_bounds[i+1]))
 					O= observe(I[t])
@@ -331,23 +329,23 @@ class ExpPlayer(DuplexpPlayer):
 			self.max_regret[self.t]  = np.max(self.regret)
 			self.t += 1
 def test():
-	for i in range(0,1):
-		T = 2000
-		num = 10
-		#graph = Graph([50,10,50,10],np.array([[0.1,0.2,0.7,0.1],[0.6,0.1,0.2,0.9],[0.1,0.2,0.8,0.4],[0.4,0.1,0.9,0.5]]))
-		#graph = Graph([100,1000],np.array([[0.9,0.01],[0.01,0.1]]))
-		#graph = Graph([600],np.array([[0.2]]))
-		graph = Graph([100,100,100,100],associative_array(4))
-		graph.draw()
-		players_type = [DuplexpPlayer,DuplexpPlayerErdos,ExpPlayer]
-		game = Game(graph,T,players_type,num)
-		game.run()
-		game.display(i)
+	graph_list = [Graph([100,100,100,100],associative_array(4)), Graph([100,100,100,100],neighbour_array(4)), Graph([100,1000],np.array([[0.9,0.01],[0.01,0.1]])), Graph([600],np.array([[0.2]]))]
+	snr = [0.1, 1, 10]
+	T = 1000
+	num = 10
+	for i in range(0,len(graph_list)):
+		graph = graph_list[i]
+		graph.draw(i)
+		for j in range(0,len(snr)):
+			players_type = [DuplexpPlayer,DuplexpPlayerErdos,ExpPlayer]
+			game = Game(graph,T,players_type,num,snr[j])
+			game.run()
+			game.display(i,j)
 
 
 def associative_array(N):
 	res = np.ones([N,N]) * 0.001
-	connect = [0.99, 0.99, 0.99, 0.99]
+	connect = [0.1, 0.1, 0.1, 0.1]
 	for i in range(0,N):
 		res[i,i] = connect[i]
 	return res
@@ -362,11 +360,6 @@ def neighbour_array(N):
 			res[i,(i+1) % N] = 0.1
 	return res
 
-
-def draw_graph():
-	#graph = Graph([100,1000],np.array([[0.9,0.02],[0.02,0.1]])/10)
-	#graph = Graph([500,100,500,100],np.array([[0.1,0.2,0.7,0.1],[0.6,0.1,0.2,0.9],[0.1,0.2,0.8,0.4],[0.4,0.1,0.9,0.5]]))
-	graph.draw()
 
 if __name__ == '__main__':
 	test()

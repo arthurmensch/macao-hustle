@@ -166,7 +166,7 @@ p_{t+2,i}\propto w_{t+2,i}= \frac{1}{N} \exp\left( -\eta_{t+2} \hat{L}_{t,i} \ri
 \begin{frame}{Generalized algorithm}
 
 \begin{itemize}
-\item We adapt \textsc{Estimate\_r} so that it returns $underline{R}$ where $\underline{r}_{ij} \leq r_{ij}$ with high probability.
+\item We adapt \textsc{Estimate\_r} so that it returns $\underline{R}$ where $\underline{r}_{ij} \leq r_{ij}$ with high probability.
 \item This is done at the relatively low cost $\expect\left({\tau}\right) \leq \sum_{i,j \in [N]^2} \frac{4\log T}{N_i} \mathbf{1}_{r_{ij} > \frac{1}{N_j}} + \sqrt{T} \mathbf{1}_{r_{ij} < \frac{1}{N_j}}+ \mathrm{Cste}$
 \end{itemize}
 
@@ -196,7 +196,7 @@ p_{t+2,i}\propto w_{t+2,i}= \frac{1}{N} \exp\left( -\eta_{t+2} \hat{L}_{t,i} \ri
 \begin{frame}{Graph 'close' to Erdös-Rényi}
 \begin{figure}[ht]
 	\centering
-	\includegraphics[width=.8\textwidth]{regret_success_easy}
+	\includegraphics[width=.8\textwidth]{regret_unbalanced_easy}
 	\caption{Easy problem}
 \end{figure}
 \end{frame}
@@ -204,7 +204,7 @@ p_{t+2,i}\propto w_{t+2,i}= \frac{1}{N} \exp\left( -\eta_{t+2} \hat{L}_{t,i} \ri
 \begin{frame}{Graph 'close' to Erdös-Rényi}
 \begin{figure}[ht]
 	\centering
-	\includegraphics[width=.8\textwidth]{regret_success_easy}
+	\includegraphics[width=.8\textwidth]{regret_unbalanced_easy}
 	\caption{Hard problem}
 \end{figure}
 \end{frame}
@@ -223,7 +223,7 @@ p_{t+2,i}\propto w_{t+2,i}= \frac{1}{N} \exp\left( -\eta_{t+2} \hat{L}_{t,i} \ri
 
 \begin{figure}[ht]
 	\centering
-	\includegraphics[width=0.8\textwidth]{regret_unsuccess_easy}
+	\includegraphics[width=0.8\textwidth]{regret_balanced_easy}
 	\caption{Easy problem}
 	\label{fig:easy}
 \end{figure}
@@ -232,7 +232,7 @@ p_{t+2,i}\propto w_{t+2,i}= \frac{1}{N} \exp\left( -\eta_{t+2} \hat{L}_{t,i} \ri
 \begin{frame}{Graph 'close' to Erdös-Rényi}
 \begin{figure}[ht]
 	\centering
-	\includegraphics[width=0.8\textwidth]{regret_unsuccess_easy}
+	\includegraphics[width=0.8\textwidth]{regret_balanced_hard}
 	\caption{Hard problem}
 	\label{fig:easy}
 \end{figure}
