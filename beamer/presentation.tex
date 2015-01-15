@@ -89,6 +89,10 @@ $\left(O_t\right)_{_i\in\left[N\right]}$ corresponds to the value of the logic e
 \end{frame}
 
 \begin{frame}{Duplex tricks}
+Ideally,
+\[
+\hat{l}_{t,i}=\frac{O_{t,i}l_{t,i}}{p_{t,i} + (1-p_{t,i})r}.
+\]
 \begin{block}{Definition geometrical random variables}
 \begin{align*}
 M_t^* &=\min\{1\leq i<N: O_{t-1,i}^{'} =1\}\cup\{N\}\\
@@ -97,9 +101,13 @@ G_{t,i}&=\min\left(K_{t,i},M_t\right)
 \end{block}
 \begin{block}{Independence}
 \begin{align*}
-p_{t+2,i}\propto w_{t+2,i}= \frac{1}{N} \exp\left( -\eta_{t+2} \hat{L}_{t,i} \right)
+p_{t+2,i} \text{ estimated at the end of the step t.}
 \end{align*}
 \end{block}
+So we can compute,
+\begin{align*}
+\hat{l}_{t,i}=G_{t,i}O_{t,i}l_{t,i}
+\end{align*}
 \end{frame}
 
 \begin{frame}{Generalizing}
@@ -163,13 +171,15 @@ p_{t+2,i}\propto w_{t+2,i}= \frac{1}{N} \exp\left( -\eta_{t+2} \hat{L}_{t,i} \ri
 
 \end{frame}
 
-\begin{frame}{Generalized algorithm}
 
+\begin{frame}{Lower bounding R}
 \begin{itemize}
 \item We adapt \textsc{Estimate\_r} so that it returns $\underline{R}$ where $\underline{r}_{ij} \leq r_{ij}$ with high probability.
 \item This is done at the relatively low cost $\expect\left({\tau}\right) \leq \sum_{i,j \in [N]^2} \frac{4\log T}{N_i} \mathbf{1}_{r_{ij} > \frac{1}{N_j}} + \sqrt{T} \mathbf{1}_{r_{ij} < \frac{1}{N_j}}+ \mathrm{Cste}$
 \end{itemize}
+\end{frame}
 
+\begin{frame}{Generalized algorithm with stochastic blockmodel graphs}
 \begin{align*}
 &\text{If }\underline{R}=0,\ & \text{ we run vanilla } \textsc{Exp3}.\\
 &\text{If } \min_{i,j,\ \underline{r}_{i,j}>0} \left(\underline{r}_{ij}\: N_j \right) \geq \log T ,\  & \text{ we run adapted }\textsc{Duplex}. \\
